@@ -1,12 +1,13 @@
-<x-mail::message>
-# Introduction
+@component('mail::message')
+# Pengingat {{ strtoupper($entity) }} H-{{ $daysBefore }}
 
-The body of your message.
+**{{ $title }}**  
+Jatuh tempo: **{{ \Carbon\Carbon::parse($targetDate)->format('d M Y') }}**
 
-<x-mail::button :url="''">
-Button Text
-</x-mail::button>
+@component('mail::button', ['url' => config('app.url').'/admin'])
+Buka Dashboard
+@endcomponent
 
-Thanks,<br>
+Terima kasih,  
 {{ config('app.name') }}
-</x-mail::message>
+@endcomponent

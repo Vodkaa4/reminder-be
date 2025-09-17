@@ -46,7 +46,7 @@ class SendExpiringContractsNotification extends Command
         }
 
         // Kirim hanya 1 email berisi semua pegawai
-        Notification::route('mail', 'hr@example.com')
+        Notification::route('mail', 'jaddlyn@gmail.com')
             ->notify(new ContractsExpiringSummaryNotification($expired, $upcoming));
 
         $this->info('Summary email kontrak expiring berhasil dikirim!');
