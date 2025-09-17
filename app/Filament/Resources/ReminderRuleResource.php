@@ -23,21 +23,12 @@ class ReminderRuleResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('entity')
-                    ->options([
-                        'contract' => 'Kontrak Karyawan',
-                        'permit' => 'Perizinan (SIM, STNK, KIR, dll)'
-                    ])
+                Forms\Components\TextInput::make('entity')
                     ->required(),
                 Forms\Components\TextInput::make('days_before')
                     ->required()
                     ->numeric(),
-                Forms\Components\Select::make('channel')
-                    ->options([
-                        'email' => 'Email',
-                        'whatsapp' => 'WhatsApp',
-                        'both' => 'Email & WhatsApp'
-                    ])
+                Forms\Components\TextInput::make('channel')
                     ->required(),
                 Forms\Components\Toggle::make('active')
                     ->required(),
@@ -48,22 +39,11 @@ class ReminderRuleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('entity')
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'contract' => 'Kontrak Karyawan',
-                        'permit' => 'Perizinan',
-                        default => $state,
-                    }),
+                Tables\Columns\TextColumn::make('entity'),
                 Tables\Columns\TextColumn::make('days_before')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('channel')
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'email' => 'Email',
-                        'whatsapp' => 'WhatsApp',
-                        'both' => 'Email & WhatsApp',
-                        default => $state,
-                    }),
+                Tables\Columns\TextColumn::make('channel'),
                 Tables\Columns\IconColumn::make('active')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')

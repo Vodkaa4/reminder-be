@@ -13,6 +13,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
+use Filament\Tables\Actions\BulkAction;
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\EmployeesExport;
+
 class EmployeeResource extends Resource
 {
     protected static ?string $model = Employee::class;
@@ -112,7 +117,8 @@ class EmployeeResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->searchable()
                     ->sortable()
-                    ->copyable(),
+                    ->copyable()
+                    ->visible(false),
                 Tables\Columns\TextColumn::make('supervisor')
                     ->searchable()
                     ->sortable(),
@@ -123,7 +129,7 @@ class EmployeeResource extends Resource
                     ->falseIcon('heroicon-o-clock')
                     ->trueColor('success')
                     ->falseColor('warning')
-                    ->getStateUsing(fn ($record) => $record?->is_permanent ? 'Permanent' : 'Contract'),
+                    ->getStateUsing(fn ($record) => $record->is_permanent),
                 Tables\Columns\TextColumn::make('contract_start')
                     ->label('Contract Start')
                     ->date()
@@ -132,12 +138,12 @@ class EmployeeResource extends Resource
                     ->label('Contract End')
                     ->date()
                     ->sortable()
-                    ->visible(fn ($record) => $record && !$record->is_permanent)
+                    // ->visible(fn ($record) => $record && !$record->is_permanent)
                     ->color(fn ($record) => 
-                        $record && $record->contract_end && $record->contract_end->diffInDays(now()) <= 30 
-                            ? 'danger' 
-                            : 'default'
-                    ),
+                                $record && $record->contract_end && $record->contract_end->isBetween(today(), today()->addDays(30))
+                                    ? 'danger'
+                                    : 'default'
+                                        ),
                 Tables\Columns\TextColumn::make('dept')
                     ->label('Department')
                     ->searchable()
@@ -145,10 +151,12 @@ class EmployeeResource extends Resource
                 Tables\Columns\TextColumn::make('sect')
                     ->label('Section')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->visible(false),
                 Tables\Columns\TextColumn::make('position')
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->visible(false),
                 Tables\Columns\TextColumn::make('location')
                     ->searchable()
                     ->sortable(),
@@ -167,13 +175,20 @@ class EmployeeResource extends Resource
                     ->placeholder('All')
                     ->trueLabel('Permanent')
                     ->falseLabel('Contract'),
-                Tables\Filters\Filter::make('contract_expiring_soon')
+                Tables\Filters\Filter::make('contract_expiring_soon_30')
                     ->label('Contract Expiring Soon (≤30 days)')
                     ->query(fn (Builder $query) => 
-                        $query->where('contract_end', '<=', now()->addDays(30))
-                              ->where('contract_end', '>=', now())
+                        $query->where('contract_end', '<=', today()->addDays(30))
+                              ->where('contract_end', '>=', today())
                               ->where('is_permanent', false)
                     ),
+                Tables\Filters\Filter::make('contract_expiring_soon_15')
+                ->label('Contract Expiring Soon (≤15 days)')
+                ->query(fn (Builder $query) => 
+                    $query->where('contract_end', '<=', today()->addDays(15))
+                            ->where('contract_end', '>=', today())
+                            ->where('is_permanent', false)
+                ),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -183,6 +198,11 @@ class EmployeeResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+                BulkAction::make('export')
+                ->label('Export to CSV')
+                ->action(fn (Collection $records) => 
+                    Excel::download(new EmployeesExport($records), 'employees.csv')
+                ),
             ])
             ->defaultSort('name', 'asc');
     }

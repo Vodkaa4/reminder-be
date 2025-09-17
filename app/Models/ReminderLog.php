@@ -6,10 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ReminderLog extends Model
 {
-    protected $guarded = ['id'];
-    
-    protected $casts = [
-        'target_date' => 'date',
-        'rule_days' => 'integer'
-    ];
+    protected $fillable = ['entity','entity_id','target_date','rule_days','recipient','channel','status','meta'];
+    protected $casts = ['target_date'=>'date','rule_days'=>'int'];
 }
