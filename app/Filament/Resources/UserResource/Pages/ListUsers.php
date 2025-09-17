@@ -5,6 +5,7 @@ namespace App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Facades\Filament;
 
 class ListUsers extends ListRecords
 {
@@ -19,7 +20,8 @@ class ListUsers extends ListRecords
         return [
             Actions\CreateAction::make()
                 ->label('Add New User')
-                ->icon('heroicon-o-plus'),
+                ->icon('heroicon-o-plus')
+                ->visible(fn () => optional(Filament::auth()->user())->role !== 'manager'),
         ];
     }
 }

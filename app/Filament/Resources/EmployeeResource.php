@@ -143,7 +143,8 @@ class EmployeeResource extends Resource
                                 $record && $record->contract_end && $record->contract_end->isBetween(today(), today()->addDays(30))
                                     ? 'danger'
                                     : 'default'
-                                        ),
+                                        )
+                    ->tooltip(fn ($record) => $record && $record->contract_end ? $record->contract_end->diffForHumans() : null),
                 Tables\Columns\TextColumn::make('dept')
                     ->label('Department')
                     ->searchable()
@@ -204,7 +205,9 @@ class EmployeeResource extends Resource
                     Excel::download(new EmployeesExport($records), 'employees.csv')
                 ),
             ])
-            ->defaultSort('name', 'asc');
+            ->defaultSort('name', 'asc')
+            ->paginated([10, 25, 50, 100])
+            ->defaultPaginationPageOption(25);
     }
 
     public static function getRelations(): array
