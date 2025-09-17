@@ -39,12 +39,16 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
                 \App\Filament\Widgets\EmployeeStatsOverview::class,
-                \App\Filament\Widgets\DashboardChart::class,
                 \App\Filament\Widgets\StatusPieChart::class,
                 \App\Filament\Widgets\DepartmentBarChart::class,
             ])
+            ->navigationGroups([
+                'Main',
+                'User Management',
+            ])
+            ->maxContentWidth('full')
+            ->sidebarCollapsibleOnDesktop()
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

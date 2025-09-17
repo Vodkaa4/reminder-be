@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PermitResource\Pages;
 use App\Filament\Resources\PermitResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Facades\Filament;
 
 class ListPermits extends ListRecords
 {
@@ -13,7 +14,8 @@ class ListPermits extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->visible(fn () => optional(Filament::auth()->user())->role !== 'manager'),
         ];
     }
 }

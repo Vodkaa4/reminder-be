@@ -8,6 +8,7 @@ use Filament\Resources\Pages\ListRecords;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\EmployeesExport;
 use App\Models\Employee;
+use Filament\Facades\Filament;
 
 class ListEmployees extends ListRecords
 {
@@ -16,7 +17,8 @@ class ListEmployees extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()
+                ->visible(fn () => optional(Filament::auth()->user())->role !== 'manager'),
             Actions\Action::make('export_csv')
                 ->label('Export CSV')
                 ->icon('heroicon-o-arrow-down-tray')
