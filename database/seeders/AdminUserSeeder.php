@@ -20,16 +20,18 @@ class AdminUserSeeder extends Seeder
                 'name'     => 'Admin',
                 'password' => Hash::make('Admin123'),
                 'email_verified_at' => now(),
+                'role' => 'admin'
             ]
         );
 
         // Create additional test users
         User::updateOrCreate(
-            ['email' => 'test@example.com'],
+            ['email' => 'manager@gmail.com'],
             [
-                'name'     => 'Test User',
+                'name'     => 'Manager',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
+                'role' => 'manager'
             ]
         );
 
