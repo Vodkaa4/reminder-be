@@ -39,12 +39,40 @@ class PermitExpiringNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
+        $mail = (new MailMessage)
             ->subject('⚠️ Pengingat Izin Mendekati Masa Berakhir - PT Eksonindo MPI')
-            ->view('emails.permit-expiring', [
-                'permits' => $this->permits,
-                'picEmail' => $this->picEmail,
-            ]);
+            ->greeting('Halo,')
+            ->line('Berikut adalah daftar izin yang akan segera berakhir dan memerlukan perpanjangan:')
+            ->line('');
+
+        foreach ($this->permits as $permit) {
+            $mail->line("**{$permit->type} - {$permit->number}**")
+                ->line("Pemegang: {$permit->holder}")
+                ->line("Lokasi: {$permit->asset_location}")
+                ->line("Tanggal Berakhir: {$permit->expires_at->format('d F Y')}")
+                ->line("Sisa Waktu: {$permit->expires_at->diffForHumans()}");
+            
+            if ($permit->notes) {
+                $mail->line("Catatan: {$permit->notes}");
+            }
+            
+            $mail->line('---');
+        }
+
+        $mail->line('**Tindakan yang Diperlukan:**')
+            ->line('- Segera proses perpanjangan izin yang akan berakhir')
+            ->line('- Persiapkan dokumen yang diperlukan')
+            ->line('- Hubungi pihak terkait untuk proses perpanjangan')
+            ->line('- Update status izin setelah diperpanjang')
+            ->line('')
+            ->line("**PIC:** {$this->picEmail}")
+            ->line("**Tanggal Pengingat:** " . now()->format('d F Y H:i'));
+
+        return $mail->action('Buka Dashboard Admin', config('app.url').'/admin')
+            ->line('')
+            ->line('Terima kasih atas perhatiannya.')
+            ->line('')
+            ->line('*Email ini dikirim secara otomatis dari sistem PT Eksonindo MPI.*');
     }
 
     /**
