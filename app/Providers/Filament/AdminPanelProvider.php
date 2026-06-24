@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\Login;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -26,11 +27,17 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(Login::class)
+            // ->profile() // Default
+            ->profile(\App\Filament\Pages\EditProfile::class) // Custom with Avatar
+            ->spa() // Enable SPA mode for faster navigation
             ->brandName('PT Eksonindo MPI')
+            ->font('Inter')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Indigo,
+                'gray' => Color::Slate,
             ])
+            ->darkMode(false) // Force Light Mode
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -38,14 +45,14 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+                // Widgets\AccountWidget::class,
                 \App\Filament\Widgets\EmployeeStatsOverview::class,
                 \App\Filament\Widgets\StatusPieChart::class,
                 \App\Filament\Widgets\DepartmentBarChart::class,
             ])
             ->navigationGroups([
-                'Main',
-                'User Management',
+                'Utama',
+                'Manajemen Pengguna',
             ])
             ->maxContentWidth('full')
             ->sidebarCollapsibleOnDesktop()
@@ -62,6 +69,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+            ->renderHook(
+                \Filament\View\PanelsRenderHook::HEAD_END,
+                fn (): string => \Illuminate\Support\Facades\Blade::render('@include("filament.custom.theme")'),
+            );
     }
 }

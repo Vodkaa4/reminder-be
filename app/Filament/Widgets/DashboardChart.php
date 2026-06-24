@@ -10,46 +10,46 @@ use Illuminate\Support\Carbon;
 
 class DashboardChart extends ChartWidget
 {
-    protected static ?string $heading = 'Dashboard Statistics';
+    protected static ?string $heading = 'Statistik Sistem';
 
     protected static ?int $sort = 2;
 
     protected function getData(): array
     {
-        $months = collect(range(0, 11))->map(function ($month) {
-            return Carbon::now()->subMonths($month)->format('M');
-        })->reverse();
+        $dates = collect(range(0, 11))->map(function ($month) {
+            return Carbon::now()->subMonths($month);
+        })->reverse()->values();
 
-        $employeeData = $months->map(function ($month) {
-            return Employee::whereMonth('created_at', Carbon::parse($month)->month)
-                ->whereYear('created_at', Carbon::parse($month)->year)
+        $employeeData = $dates->map(function ($date) {
+            return Employee::whereMonth('created_at', $date->month)
+                ->whereYear('created_at', $date->year)
                 ->count();
         });
 
-        $permitData = $months->map(function ($month) {
-            return Permit::whereMonth('created_at', Carbon::parse($month)->month)
-                ->whereYear('created_at', Carbon::parse($month)->year)
+        $permitData = $dates->map(function ($date) {
+            return Permit::whereMonth('created_at', $date->month)
+                ->whereYear('created_at', $date->year)
                 ->count();
         });
 
         return [
             'datasets' => [
                 [
-                    'label' => 'Employees',
+                    'label' => 'Karyawan Baru',
                     'data' => $employeeData->toArray(),
                     'borderColor' => '#f59e0b',
                     'backgroundColor' => 'rgba(245, 158, 11, 0.1)',
                     'tension' => 0.4,
                 ],
                 [
-                    'label' => 'Permits',
+                    'label' => 'Perizinan Baru',
                     'data' => $permitData->toArray(),
                     'borderColor' => '#10b981',
                     'backgroundColor' => 'rgba(16, 185, 129, 0.1)',
                     'tension' => 0.4,
                 ],
             ],
-            'labels' => $months->toArray(),
+            'labels' => $dates->map(fn($d) => $d->translatedFormat('M'))->toArray(),
         ];
     }
 

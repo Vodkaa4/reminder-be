@@ -7,9 +7,9 @@ use Filament\Widgets\ChartWidget;
 
 class StatusPieChart extends ChartWidget
 {
-    protected static ?string $heading = 'Permit Status Distribution';
+    protected static ?string $heading = 'Distribusi Status Perizinan';
 
-    protected static ?int $sort = 3;
+    protected static ?int $sort = 2;
 
     protected function getData(): array
     {
@@ -30,7 +30,7 @@ class StatusPieChart extends ChartWidget
                     'borderWidth' => 2,
                 ],
             ],
-            'labels' => ['Active', 'Renewal', 'Expired'],
+            'labels' => ['Aktif', 'Perpanjangan', 'Kadaluarsa'],
         ];
     }
 

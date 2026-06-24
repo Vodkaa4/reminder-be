@@ -7,9 +7,9 @@ use Filament\Widgets\ChartWidget;
 
 class DepartmentBarChart extends ChartWidget
 {
-    protected static ?string $heading = 'Employee Distribution by Department';
+    protected static ?string $heading = 'Distribusi Karyawan per Departemen';
 
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 2;
 
     protected function getData(): array
     {
@@ -22,7 +22,7 @@ class DepartmentBarChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Employees',
+                    'label' => 'Karyawan',
                     'data' => array_values($departments),
                     'backgroundColor' => [
                         '#3b82f6', // Blue

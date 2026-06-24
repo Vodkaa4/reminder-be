@@ -12,13 +12,17 @@ class ContractsExpiringSummaryNotification extends Notification implements Shoul
 {
     use Queueable;
 
-    public Collection $expired;
-    public Collection $upcoming;
+    public Collection $critical;
+    public array $warnings;
 
-    public function __construct(Collection $expired, Collection $upcoming)
+    /**
+     * @param Collection $critical
+     * @param array $warnings Array of grouped collections, e.g. [ 30 => Collection, 15 => Collection ]
+     */
+    public function __construct(Collection $critical, array $warnings)
     {
-        $this->expired = $expired;
-        $this->upcoming = $upcoming;
+        $this->critical = $critical;
+        $this->warnings = $warnings;
     }
 
     public function via(object $notifiable): array
@@ -29,45 +33,45 @@ class ContractsExpiringSummaryNotification extends Notification implements Shoul
     public function toMail(object $notifiable): MailMessage
     {
         $mail = (new MailMessage)
-            ->subject('📋 Laporan Kontrak Karyawan - PT Eksonindo MPI')
-            ->greeting('Halo HR,')
-            ->line('Berikut laporan kontrak karyawan yang memerlukan perhatian:')
+            ->subject('📋 Laporan Status Kontrak Karyawan - PT Eksonindo MPI')
+            ->greeting('Halo HRD,')
+            ->line('Berikut adalah rekap harian untuk kontrak karyawan yang mendekati atau telah melewati masa kadaluarsa berdasarkan aturan sistem:')
             ->line('');
 
-        // List A - Expired
-        $mail->line('🔴 **KONTRAK SUDAH BERAKHIR:**');
-        if ($this->expired->isEmpty()) {
-            $mail->line('- ✅ Tidak ada kontrak yang sudah berakhir');
+        // Critical (<= 7)
+        $mail->line('🔴 **KONTRAK KRITIS (≤ 7 Hari / Sudah Habis):**');
+        if ($this->critical->isEmpty()) {
+            $mail->line('- ✅ Aman (Tidak ada)');
         } else {
-            foreach ($this->expired as $emp) {
-                $daysOverdue = today()->diffInDays($emp->contract_end);
-                $mail->line("- **{$emp->name}** (NIP: {$emp->nip}) - Berakhir: {$emp->contract_end->format('d F Y')} ({$daysOverdue} hari terlambat)");
+            foreach ($this->critical as $emp) {
+                $days = today()->diffInDays($emp->contract_end, false);
+                $statusText = $days < 0 ? "Sudah lewat " . abs($days) . " hari" : "Sisa {$days} hari";
+                $mail->line("- **{$emp->name}** (NIP: {$emp->nip}) - Berakhir: {$emp->contract_end->format('d F Y')} ({$statusText})");
             }
         }
-
         $mail->line('');
 
-        // List B - Upcoming
-        $mail->line('🟡 **KONTRAK AKAN BERAKHIR (≤15 hari):**');
-        if ($this->upcoming->isEmpty()) {
-            $mail->line('- ✅ Tidak ada kontrak yang akan berakhir');
-        } else {
-            foreach ($this->upcoming as $emp) {
-                $daysLeft = today()->diffInDays($emp->contract_end);
-                $mail->line("- **{$emp->name}** (NIP: {$emp->nip}) - Berakhir: {$emp->contract_end->format('d F Y')} ({$daysLeft} hari lagi)");
+        // Loop over dynamic warnings
+        // Key represents the "days_before" rule.
+        ksort($this->warnings);
+        foreach ($this->warnings as $days => $collection) {
+            if ($collection->isNotEmpty()) {
+                $mail->line("🟡 **PERINGATAN {$days} HARI:**");
+                foreach ($collection as $emp) {
+                    $mail->line("- **{$emp->name}** (NIP: {$emp->nip}) - Berakhir: {$emp->contract_end->format('d F Y')}");
+                }
+                $mail->line('');
             }
         }
 
-        $mail->line('')
-            ->line('📝 **Tindakan yang diperlukan:**')
-            ->line('- Segera proses perpanjangan kontrak')
-            ->line('- Hubungi karyawan terkait')
-            ->line('- Update status di sistem');
+        $mail->line('📝 **Tindakan yang diperlukan:**')
+            ->line('- Pekerja di kategori KRITIS harus segera diproses perpanjangannya karena sistem akan terus mengirim notifikasi tiap hari sampai statusnya diperbarui.')
+            ->line('- Update tanggal kontrak di sistem admin jika diperpanjang.');
 
         return $mail->action('Buka Dashboard Admin', config('app.url').'/admin')
             ->line('')
-            ->line('Terima kasih atas perhatiannya.')
+            ->line('Terima kasih.')
             ->line('')
-            ->line('*Email ini dikirim secara otomatis dari sistem PT Eksonindo MPI.*');
+            ->line('*Email otomatis pengingat Kontrak Karyawan - Sistem PT Eksonindo MPI.*');
     }
 }

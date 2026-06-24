@@ -2,7 +2,13 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Console\Scheduling\Schedule;
 
-Schedule::command('reminders:run')->dailyAt('08:00');
-Schedule::command('permits:send-expiring --days=30')->dailyAt('09:00');
-Schedule::command('permits:send-expiring --days=15')->dailyAt('09:30');
+Artisan::command('inspire', function () {
+    $this->comment(Inspiring::quote());
+})->purpose('Display an inspiring quote');
+
+app(Schedule::class)->command('contracts:send-expiring')->dailyAt('08:00');
+app(Schedule::class)->command('permits:send-expiring')->dailyAt('08:00');
+app(Schedule::class)->command('reminders:run')->dailyAt('08:00');
+app(Schedule::class)->command('permits:update-statuses')->dailyAt('00:00');

@@ -4,74 +4,114 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\Permit;
+use App\Models\ReminderRule;
+use App\Models\ReminderLog;
 use App\Notifications\PermitExpiringNotification;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class SendPermitExpiringNotification extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'permits:send-expiring {--days=30 : Days before expiry to send notification}';
+    protected $signature = 'permits:send-expiring';
+    protected $description = 'Send daily summary of expiring permits to HRD (Hybrid with DB Rules)';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Send email notifications for permits expiring soon';
-
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
-        $days = (int) $this->option('days');
+        $today = Carbon::today();
+
+        // 1. Dapatkan aturan hari dinamis dari database untuk "permit"
+        $ruleDays = ReminderRule::where('active', 1)
+                        ->where('entity', ReminderRule::ENTITY_PERMIT)
+                        ->pluck('days_before')
+                        ->toArray();
+
+        // Ambil izin yang masih "active" dan "renewal" (jangan ambil yang sudah dimatikan/diarsipkan sepenuhnya)
+        // Kita includekan "expired" karena kita mau terus ngespam sampai HRD beresin.
+        $targetDates = [];
+        foreach ($ruleDays as $day) {
+            $targetDates[] = $today->copy()->addDays($day)->format('Y-m-d');
+        }
         
-        // Get permits expiring within specified days
-        $expiringPermits = Permit::where('expires_at', '<=', Carbon::now()->addDays($days))
-            ->where('expires_at', '>=', Carbon::now())
-            ->where('status', 'active')
-            ->whereNotNull('pic')
+        $criticalThreshold = $today->copy()->addDays(7)->format('Y-m-d');
+
+        // Fetch only relevant permits from DB
+        $permits = Permit::whereIn('status', ['active', 'renewal', 'expired'])
+            ->whereNotNull('expires_at')
+            ->where(function ($query) use ($targetDates, $criticalThreshold) {
+                $query->whereDate('expires_at', '<=', $criticalThreshold);
+                if (!empty($targetDates)) {
+                    $query->orWhereIn('expires_at', $targetDates);
+                }
+            })
             ->get();
 
-        if ($expiringPermits->isEmpty()) {
-            $this->info("Tidak ada izin yang akan berakhir dalam {$days} hari ke depan.");
-            return;
+        $critical = collect();
+        $warnings = [];
+        
+        // Siapkan array
+        foreach ($ruleDays as $day) {
+            $warnings[$day] = collect();
         }
 
-        // Group permits by PIC email
-        $permitsByPic = $expiringPermits->groupBy('pic');
+        $hasDataToSend = false;
 
-        $totalEmailsSent = 0;
+        foreach ($permits as $permit) {
+            $diff = clone $today;
+            $diff = $diff->diffInDays($permit->expires_at, false);
 
-        foreach ($permitsByPic as $picEmail => $permits) {
-            try {
-                // Send notification to PIC
-                Notification::route('mail', $picEmail)
-                    ->notify(new PermitExpiringNotification($permits, $picEmail));
+            if ($diff <= 7) {
+                // Spam Kritis
+                $critical->push($permit);
+                $hasDataToSend = true;
+            } 
+            elseif (in_array($diff, $ruleDays)) {
+                // Cek log biar gak dobel run
+                $alreadyLogged = ReminderLog::where([
+                    'entity' => 'permit',
+                    'entity_id' => $permit->id,
+                    'target_date' => $permit->expires_at->format('Y-m-d'),
+                    'rule_days' => $diff,
+                    'status' => 'sent',
+                ])->exists();
 
-                $this->info("Email pengingat dikirim ke {$picEmail} untuk {$permits->count()} izin.");
-                $totalEmailsSent++;
-            } catch (\Exception $e) {
-                $this->error("Gagal mengirim email ke {$picEmail}: " . $e->getMessage());
+                if (!$alreadyLogged) {
+                    $warnings[$diff]->push($permit);
+                    $hasDataToSend = true;
+                }
             }
         }
 
-        // Also send to admin email
-        try {
-            Notification::route('mail', 'jaddlyn@gmail.com')
-                ->notify(new PermitExpiringNotification($expiringPermits, 'Admin'));
-            
-            $this->info("Email summary dikirim ke admin (jaddlyn@gmail.com) untuk {$expiringPermits->count()} izin.");
-            $totalEmailsSent++;
-        } catch (\Exception $e) {
-            $this->error("Gagal mengirim email ke admin: " . $e->getMessage());
+        if (!$hasDataToSend) {
+            $this->info('Tidak ada jadwal notifikasi dokumen perizinan untuk hari ini.');
+            return;
         }
 
-        $this->info("Total {$totalEmailsSent} email pengingat berhasil dikirim!");
+        // Kirim ke HRD
+        $hrEmail = env('MAIL_HR_SUMMARY_ADDRESS', 'jaddlyn@gmail.com');
+        Notification::route('mail', $hrEmail)
+            ->notify(new PermitExpiringNotification($critical, $warnings));
+
+        $this->info('Summary email izin dikirim ke HRD!');
+
+        // Catat ke log
+        DB::transaction(function () use ($warnings) {
+            foreach ($warnings as $diffDays => $kumpulanPermit) {
+                foreach ($kumpulanPermit as $permit) {
+                    ReminderLog::create([
+                        'entity' => 'permit',
+                        'entity_id' => $permit->id,
+                        'target_date' => $permit->expires_at->format('Y-m-d'),
+                        'rule_days' => $diffDays,
+                        'recipient' => 'jaddlyn@gmail.com (HRD Summary)',
+                        'channel' => 'email',
+                        'status' => 'sent',
+                        'meta' => ['number' => $permit->number, 'type' => $permit->type],
+                    ]);
+                }
+            }
+        });
+        
+        $this->info('Pencatatan Audit Log Izin berhasil!');
     }
 }

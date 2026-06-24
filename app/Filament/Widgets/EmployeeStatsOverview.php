@@ -10,6 +10,15 @@ use Carbon\Carbon;
 
 class EmployeeStatsOverview extends BaseWidget
 {
+    protected static ?int $sort = 1;
+
+    protected int | string | array $columnSpan = 'full';
+
+    protected function getColumns(): int
+    {
+        return 4;
+    }
+
     protected function getStats(): array
     {
         $totalEmployees = Employee::count();
@@ -28,40 +37,40 @@ class EmployeeStatsOverview extends BaseWidget
             ->count();
 
         return [
-            Stat::make('Total Users', User::count())
-                ->description('All registered users')
+            Stat::make('Total Pengguna', User::count())
+                ->description('Semua pengguna terdaftar')
                 ->descriptionIcon('heroicon-m-users')
                 ->color('primary')
                 ->chart([7, 2, 10, 3, 15, 4, 17]),
 
-            Stat::make('Verified Users', User::whereNotNull('email_verified_at')->count())
-                ->description('Users with verified email')
+            Stat::make('Pengguna Terverifikasi', User::whereNotNull('email_verified_at')->count())
+                ->description('Pengguna dengan email terverifikasi')
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success')
                 ->chart([17, 16, 14, 15, 14, 13, 12]),
 
-            Stat::make('Total Employees', $totalEmployees)
-                ->description('All registered employees')
+            Stat::make('Total Karyawan', $totalEmployees)
+                ->description('Semua karyawan terdaftar')
                 ->descriptionIcon('heroicon-m-users')
                 ->color('info'),
 
-            Stat::make('Permanent Employees', $permanentEmployees)
-                ->description('Full-time permanent staff')
+            Stat::make('Karyawan Tetap', $permanentEmployees)
+                ->description('Staf tetap penuh waktu')
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
 
-            Stat::make('Contract Employees', $contractEmployees)
-                ->description('Temporary contract staff')
+            Stat::make('Karyawan Kontrak', $contractEmployees)
+                ->description('Staf kontrak sementara')
                 ->descriptionIcon('heroicon-m-clock')
                 ->color('warning'),
 
-            Stat::make('Expiring Soon (≤30 days)', $expiringSoon)
-                ->description('Contracts ending soon')
+            Stat::make('Segera Berakhir (≤30 hari)', $expiringSoon)
+                ->description('Kontrak segera berakhir')
                 ->descriptionIcon('heroicon-m-exclamation-triangle')
                 ->color($expiringSoon > 0 ? 'danger' : 'success'),
 
-            Stat::make('Expired Contracts', $expiredContracts)
-                ->description('Overdue contracts')
+            Stat::make('Kontrak Berakhir', $expiredContracts)
+                ->description('Kontrak yang telah habis')
                 ->descriptionIcon('heroicon-m-x-circle')
                 ->color($expiredContracts > 0 ? 'danger' : 'success'),
         ];

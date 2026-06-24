@@ -21,34 +21,43 @@ class PermitResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
+    protected static ?string $navigationLabel = 'Perizinan';
+    protected static ?string $modelLabel = 'Perizinan';
+    protected static ?string $pluralModelLabel = 'Perizinan';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('type')
+                    ->label('Jenis')
                     ->required()
                     ->maxLength(50),
                 Forms\Components\TextInput::make('number')
+                    ->label('Nomor')
                     ->maxLength(100),
                 Forms\Components\TextInput::make('holder')
+                    ->label('Pemegang')
                     ->maxLength(100),
                 Forms\Components\TextInput::make('asset_location')
+                    ->label('Lokasi Aset')
                     ->maxLength(50),
-                Forms\Components\DatePicker::make('issued_at'),
+                Forms\Components\DatePicker::make('issued_at')
+                    ->label('Diterbitkan'),
                 Forms\Components\DatePicker::make('expires_at')
+                    ->label('Kadaluarsa')
                     ->required(),
                 Forms\Components\TextInput::make('pic')
-                    ->label('PIC Email')
+                    ->label('Email PIC')
                     ->email()
                     ->placeholder('pic@example.com')
                     ->helperText('Masukkan email penanggung jawab (PIC) untuk pengingat.')
                     ->maxLength(191),
-                Forms\Components\TextInput::make('status')
-                    ->required(),
                 Forms\Components\Textarea::make('notes')
+                    ->label('Catatan')
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('attachment_path')
-                    ->label('Attachment')
+                    ->label('Lampiran')
                     ->disk('private')
                     ->directory('permits')
                     ->preserveFilenames()
@@ -65,35 +74,50 @@ class PermitResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('type')
+                    ->label('Jenis')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('number')
+                    ->label('Nomor')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('holder')
+                    ->label('Pemegang')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('asset_location')
+                    ->label('Lokasi Aset')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('issued_at')
+                    ->label('Diterbitkan')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('expires_at')
+                    ->label('Kadaluarsa')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('pic')
-                    ->label('PIC Email')
+                    ->label('Email PIC')
                     ->searchable()
                     ->copyable()
                     ->url(fn ($record) => $record->pic ? 'mailto:'.$record->pic : null),
-                Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('calculated_status')
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'active' => 'success',
+                        'renewal' => 'warning',
+                        'expired' => 'danger',
+                    }),
                 Tables\Columns\TextColumn::make('attachment_path')
-                    ->label('Attachment')
-                    ->formatStateUsing(fn ($state) => $state ? 'Download' : '-')
+                    ->label('Lampiran')
+                    ->formatStateUsing(fn ($state) => $state ? 'Unduh' : '-')
                     ->url(fn ($record) => $record->attachment_path ? route('permits.download', ['permit' => $record->id]) : null, shouldOpenInNewTab: true)
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Dibuat Pada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Diubah Pada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -103,12 +127,12 @@ class PermitResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('download_attachment')
-                    ->label('Download')
+                    ->label('Unduh Lampiran')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->url(fn ($record) => $record->attachment_path ? route('permits.download', ['permit' => $record->id]) : null, shouldOpenInNewTab: true)
                     ->visible(fn ($record) => filled($record->attachment_path)),
                 Tables\Actions\Action::make('delete_attachment')
-                    ->label('Delete attachment')
+                    ->label('Hapus Lampiran')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->requiresConfirmation()
@@ -142,8 +166,8 @@ class PermitResource extends Resource
     {
         return [
             'index' => Pages\ListPermits::route('/'),
-            'create' => Pages\CreatePermit::route('/create'),
-            'edit' => Pages\EditPermit::route('/{record}/edit'),
+            // 'create' => Pages\CreatePermit::route('/create'), // Disabled to use Modal
+            // 'edit' => Pages\EditPermit::route('/{record}/edit'), // Disabled to use Modal
         ];
     }
 }

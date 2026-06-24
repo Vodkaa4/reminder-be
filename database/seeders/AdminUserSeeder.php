@@ -20,25 +20,48 @@ class AdminUserSeeder extends Seeder
                 'name'     => 'Admin',
                 'password' => Hash::make('Admin123'),
                 'email_verified_at' => now(),
+                'role'     => 'admin',
             ]
         );
 
         // Create additional test users
         User::updateOrCreate(
-            ['email' => 'test@example.com'],
+            ['email' => 'test@email.com'],
             [
                 'name'     => 'Test User',
                 'password' => Hash::make('password'),
                 'email_verified_at' => now(),
+                'role'     => 'manager',
             ]
         );
 
         User::updateOrCreate(
-            ['email' => 'unverified@example.com'],
+            ['email' => 'unverified@email.com'],
             [
                 'name'     => 'Unverified User',
                 'password' => Hash::make('password'),
                 'email_verified_at' => null,
+                'role'     => 'manager',
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'hrd@email.com'],
+            [
+                'name'     => 'Admin HRD',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+                'role'     => 'hrd',
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'legal@email.com'],
+            [
+                'name'     => 'Admin Legal',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+                'role'     => 'legal',
             ]
         );
     }

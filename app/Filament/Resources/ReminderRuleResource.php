@@ -19,19 +19,44 @@ class ReminderRuleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
 
+    protected static ?string $navigationLabel = 'Aturan Pengingat';
+    protected static ?string $modelLabel = 'Aturan Pengingat';
+    protected static ?string $pluralModelLabel = 'Aturan Pengingat';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('entity')
+                Forms\Components\Select::make('entity')
+                    ->label('Entitas')
+                    ->options([
+                        'contract' => 'Kontrak Karyawan',
+                        'permit' => 'Perizinan',
+                    ])
                     ->required(),
                 Forms\Components\TextInput::make('days_before')
+                    ->label('H- Hari')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('channel')
+                Forms\Components\Select::make('channel')
+                    ->label('Saluran')
+                    ->options([
+                        'email' => 'Email',
+                        'whatsapp' => 'WhatsApp',
+                        'system' => 'Sistem',
+                    ])
                     ->required(),
                 Forms\Components\Toggle::make('active')
+                    ->label('Aktif')
                     ->required(),
+                Forms\Components\Toggle::make('is_recurring')
+                    ->label('Set Berulang (Recurring)')
+                    ->live(),
+                Forms\Components\TextInput::make('recurring_interval_days')
+                    ->label('Ulangi setiap X hari')
+                    ->numeric()
+                    ->required(fn (Forms\Get $get) => $get('is_recurring'))
+                    ->visible(fn (Forms\Get $get) => $get('is_recurring')),
             ]);
     }
 
@@ -39,18 +64,38 @@ class ReminderRuleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('entity'),
+                Tables\Columns\TextColumn::make('entity')
+                    ->label('Entitas')
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'contract' => 'Kontrak Karyawan',
+                        'permit' => 'Perizinan',
+                        default => $state,
+                    }),
                 Tables\Columns\TextColumn::make('days_before')
+                    ->label('H- Hari')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('channel'),
+                Tables\Columns\TextColumn::make('channel')
+                    ->label('Saluran')
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'email' => 'Email',
+                        'whatsapp' => 'WhatsApp',
+                        'system' => 'Sistem',
+                        default => $state,
+                    }),
                 Tables\Columns\IconColumn::make('active')
+                    ->label('Aktif')
+                    ->boolean(),
+                Tables\Columns\IconColumn::make('is_recurring')
+                    ->label('Berulang')
                     ->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Dibuat Pada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Diubah Pada')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -79,8 +124,8 @@ class ReminderRuleResource extends Resource
     {
         return [
             'index' => Pages\ListReminderRules::route('/'),
-            'create' => Pages\CreateReminderRule::route('/create'),
-            'edit' => Pages\EditReminderRule::route('/{record}/edit'),
+            // 'create' => Pages\CreateReminderRule::route('/create'), // Disabled to use Modal
+            // 'edit' => Pages\EditReminderRule::route('/{record}/edit'), // Disabled to use Modal
         ];
     }
 }

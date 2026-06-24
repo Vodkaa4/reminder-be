@@ -13,6 +13,10 @@ class EmployeeSeeder extends Seeder
      */
     public function run(): void
     {
+        \Illuminate\Support\Facades\DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \Illuminate\Support\Facades\DB::table('employees')->truncate();
+        \Illuminate\Support\Facades\DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         $employees = [
             // Permanent Employees - Production
             [
@@ -65,8 +69,8 @@ class EmployeeSeeder extends Seeder
                 'email' => 'dewi.sartika@company.com',
                 'supervisor' => 'Ahmad Supriadi',
                 'is_permanent' => false,
-                'contract_start' => '2024-01-01',
-                'contract_end' => '2024-12-31',
+                'contract_start' => now()->subMonths(6)->format('Y-m-d'),
+                'contract_end' => now()->addDays(30)->format('Y-m-d'),
                 'resign_date' => null,
                 'dept' => 'Produksi',
                 'sect' => 'Quality Control',
@@ -79,8 +83,8 @@ class EmployeeSeeder extends Seeder
                 'email' => 'joko.widodo@company.com',
                 'supervisor' => 'Ahmad Supriadi',
                 'is_permanent' => false,
-                'contract_start' => '2024-02-01',
-                'contract_end' => '2025-01-31',
+                'contract_start' => now()->subMonths(6)->format('Y-m-d'),
+                'contract_end' => now()->addDays(15)->format('Y-m-d'),
                 'resign_date' => null,
                 'dept' => 'Produksi',
                 'sect' => 'Maintenance',
@@ -91,9 +95,9 @@ class EmployeeSeeder extends Seeder
             // HRD Department
             [
                 'nip' => 'EMP-0006',
-                'name' => 'Sri Mulyani',
+                'name' => 'Khadizah Aulia',
                 'email' => 'sri.mulyani@company.com',
-                'supervisor' => 'Budi Santoso',
+                'supervisor' => 'Budi Siregar',
                 'is_permanent' => true,
                 'contract_start' => '2019-08-01',
                 'contract_end' => null,
@@ -139,8 +143,8 @@ class EmployeeSeeder extends Seeder
                 'email' => 'eko.putro@company.com',
                 'supervisor' => 'Rini Soemarno',
                 'is_permanent' => false,
-                'contract_start' => '2024-03-01',
-                'contract_end' => '2025-02-28',
+                'contract_start' => now()->subMonths(6)->format('Y-m-d'),
+                'contract_end' => now()->addDays(5)->format('Y-m-d'),
                 'resign_date' => null,
                 'dept' => 'IT',
                 'sect' => 'Support',
@@ -187,8 +191,8 @@ class EmployeeSeeder extends Seeder
                 'email' => 'megawati.soekarno@company.com',
                 'supervisor' => 'Budi Santoso',
                 'is_permanent' => false,
-                'contract_start' => '2024-01-01',
-                'contract_end' => '2024-12-31',
+                'contract_start' => now()->subMonths(6)->format('Y-m-d'),
+                'contract_end' => now()->subDays(1)->format('Y-m-d'),
                 'resign_date' => null,
                 'dept' => 'Marketing',
                 'sect' => 'Brand',
