@@ -110,7 +110,7 @@ class EmployeeReport extends Page implements HasForms
             ->send();
     }
 
-    public function exportExcel(): StreamedResponse
+    public function exportExcel()
     {
         $records = $this->buildQuery()->get();
 
@@ -126,7 +126,7 @@ class EmployeeReport extends Page implements HasForms
         return Excel::download(new EmployeesExport($records), $filename);
     }
 
-    public function exportPdf(): \Illuminate\Http\RedirectResponse
+    public function exportPdf()
     {
         $params = array_filter($this->data);
         $url    = route('reports.employees.pdf', $params);

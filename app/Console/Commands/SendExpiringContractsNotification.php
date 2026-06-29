@@ -88,7 +88,7 @@ class SendExpiringContractsNotification extends Command
         }
 
         // Kirim 1 Email Terpusat ke HRD
-        $hrEmail = env('MAIL_HR_SUMMARY_ADDRESS', 'jaddlyn@gmail.com');
+        $hrEmail = env('HRD_EMAIL', 'hrd@pt-eksonindo.com');
         Notification::route('mail', $hrEmail)
             ->notify(new ContractsExpiringSummaryNotification($critical, $warnings));
 
@@ -103,7 +103,7 @@ class SendExpiringContractsNotification extends Command
                         'entity_id' => $emp->id,
                         'target_date' => $emp->contract_end->format('Y-m-d'),
                         'rule_days' => $diffDays,
-                        'recipient' => 'jaddlyn@gmail.com (HRD Summary)',
+                        'recipient' => env('HRD_EMAIL', 'hrd@pt-eksonindo.com') . ' (HRD Summary)',
                         'channel' => 'email',
                         'status' => 'sent',
                         'meta' => ['name' => $emp->name, 'nip' => $emp->nip],

@@ -11,10 +11,7 @@ use Filament\Pages\Page;
 
 class Login extends BaseLogin
 {
-    public function getView(): string
-    {
-        return 'filament.pages.auth.login';
-    }
+
 
     protected function getEmailFormComponent(): Component
     {

@@ -128,12 +128,21 @@ class EmployeeResource extends Resource
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_permanent')
                     ->label('Status')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-clock')
-                    ->trueColor('success')
-                    ->falseColor('warning')
-                    ->getStateUsing(fn ($record) => $record->is_permanent),
+                    ->icon(fn ($record) => match(true) {
+                        $record->is_permanent => 'heroicon-o-check-circle',
+                        !$record->is_permanent && $record->contract_end && $record->contract_end < today() => 'heroicon-o-x-circle',
+                        default => 'heroicon-o-clock',
+                    })
+                    ->color(fn ($record) => match(true) {
+                        $record->is_permanent => 'success',
+                        !$record->is_permanent && $record->contract_end && $record->contract_end < today() => 'danger',
+                        default => 'warning',
+                    })
+                    ->tooltip(fn ($record) => match(true) {
+                        $record->is_permanent => 'Karyawan Tetap',
+                        !$record->is_permanent && $record->contract_end && $record->contract_end < today() => 'Kontrak Habis',
+                        default => 'Karyawan Kontrak',
+                    }),
                 Tables\Columns\TextColumn::make('contract_start')
                     ->label('Mulai Kontrak')
                     ->date()
@@ -142,12 +151,11 @@ class EmployeeResource extends Resource
                     ->label('Akhir Kontrak')
                     ->date()
                     ->sortable()
-                    // ->visible(fn ($record) => $record && !$record->is_permanent)
-                    ->color(fn ($record) => 
-                                $record && $record->contract_end && $record->contract_end->isBetween(today(), today()->addDays(30))
-                                    ? 'danger'
-                                    : 'default'
-                                        )
+                    ->color(fn ($record) => match(true) {
+                        $record && $record->contract_end && $record->contract_end < today() => 'danger',
+                        $record && $record->contract_end && $record->contract_end->isBetween(today(), today()->addDays(30)) => 'warning',
+                        default => 'default',
+                    })
                     ->tooltip(fn ($record) => $record && $record->contract_end ? $record->contract_end->diffForHumans() : null),
                 Tables\Columns\TextColumn::make('dept')
                     ->label('Departemen')

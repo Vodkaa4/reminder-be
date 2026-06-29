@@ -34,7 +34,7 @@ class PermitExpiringNotification extends Notification implements ShouldQueue
     {
         $mail = (new MailMessage)
             ->subject('⚠️ Laporan Status Dokumen Perizinan - PT Eksonindo MPI')
-            ->greeting('Halo HRD,')
+            ->greeting('Halo Admin Legal,')
             ->line('Berikut adalah rekap harian untuk dokumen perizinan yang mendekati atau telah melewati batas masa berlaku berdasarkan aturan sistem:')
             ->line('');
 

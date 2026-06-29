@@ -87,12 +87,12 @@ class SendPermitExpiringNotification extends Command
             return;
         }
 
-        // Kirim ke HRD
-        $hrEmail = env('MAIL_HR_SUMMARY_ADDRESS', 'jaddlyn@gmail.com');
-        Notification::route('mail', $hrEmail)
+        // Kirim ke Legal
+        $legalEmail = env('LEGAL_EMAIL', 'legal@pt-eksonindo.com');
+        Notification::route('mail', $legalEmail)
             ->notify(new PermitExpiringNotification($critical, $warnings));
 
-        $this->info('Summary email izin dikirim ke HRD!');
+        $this->info('Summary email izin dikirim ke Admin Legal!');
 
         // Catat ke log
         DB::transaction(function () use ($warnings) {
@@ -103,7 +103,7 @@ class SendPermitExpiringNotification extends Command
                         'entity_id' => $permit->id,
                         'target_date' => $permit->expires_at->format('Y-m-d'),
                         'rule_days' => $diffDays,
-                        'recipient' => 'jaddlyn@gmail.com (HRD Summary)',
+                        'recipient' => env('LEGAL_EMAIL', 'legal@pt-eksonindo.com') . ' (Legal Summary)',
                         'channel' => 'email',
                         'status' => 'sent',
                         'meta' => ['number' => $permit->number, 'type' => $permit->type],

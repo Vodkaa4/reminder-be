@@ -46,7 +46,7 @@ class EmployeesExport implements
             $record->sect,
             $record->position,
             $record->location,
-            $record->is_permanent ? 'Permanent' : 'Contract',
+            $record->is_permanent ? 'Tetap' : 'Kontrak',
             optional($record->contract_start)?->format('Y-m-d'),
             optional($record->contract_end)?->format('Y-m-d'),
             optional($record->resign_date)?->format('Y-m-d'),
@@ -55,7 +55,7 @@ class EmployeesExport implements
 
     public function headings(): array
     {
-        return ['NIP','Name','Email','Department','Section','Position','Location','Status','Contract Start','Contract End','Resign Date'];
+        return ['NIP','Nama','Email','Departemen','Bagian','Jabatan','Lokasi','Status','Tanggal Mulai Kontrak','Tanggal Akhir Kontrak','Tanggal Resign'];
     }
 
     public function columnFormats(): array

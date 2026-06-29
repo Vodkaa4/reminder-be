@@ -23,8 +23,8 @@ class ReminderLogReport extends Page implements HasForms
 
     protected static ?string $navigationIcon  = 'heroicon-o-bell-alert';
     protected static ?string $navigationGroup = 'Laporan';
-    protected static ?string $navigationLabel = 'Laporan Reminder Log';
-    protected static ?string $title           = 'Laporan Reminder Log';
+    protected static ?string $navigationLabel = 'Laporan Log Pengingat';
+    protected static ?string $title           = 'Laporan Log Pengingat';
     protected static ?int    $navigationSort  = 2;
 
     protected static string $view = 'filament.pages.reports.reminder-log-report';
@@ -51,33 +51,33 @@ class ReminderLogReport extends Page implements HasForms
                     ->schema([
                         Grid::make(3)->schema([
                             Select::make('entity')
-                                ->label('Entity')
+                                ->label('Entitas')
                                 ->options([
-                                    'permit'   => 'Permit',
-                                    'contract' => 'Contract',
+                                    'permit'   => 'Perizinan',
+                                    'contract' => 'Kontrak Karyawan',
                                 ])
-                                ->placeholder('Semua Entity')
+                                ->placeholder('Semua Entitas')
                                 ->native(false),
 
                             Select::make('status')
                                 ->label('Status')
                                 ->options([
-                                    'sent'    => 'Sent',
-                                    'failed'  => 'Failed',
-                                    'skipped' => 'Skipped',
+                                    'sent'    => 'Terkirim',
+                                    'failed'  => 'Gagal',
+                                    'skipped' => 'Dilewati',
                                 ])
                                 ->placeholder('Semua Status')
                                 ->native(false),
 
                             Select::make('rule_days')
-                                ->label('Days Before')
+                                ->label('Aturan Pengingat (H- Hari)')
                                 ->options([
                                     15 => '15 hari',
                                     30 => '30 hari',
                                     60 => '60 hari',
                                     90 => '90 hari',
                                 ])
-                                ->placeholder('Semua')
+                                ->placeholder('Semua Aturan')
                                 ->native(false),
                         ]),
                         Grid::make(2)->schema([
@@ -107,7 +107,7 @@ class ReminderLogReport extends Page implements HasForms
             ->send();
     }
 
-    public function exportExcel(): StreamedResponse
+    public function exportExcel()
     {
         $records = $this->buildQuery()->get();
 
@@ -123,7 +123,7 @@ class ReminderLogReport extends Page implements HasForms
         return Excel::download(new ReminderLogsExport($records), $filename);
     }
 
-    public function exportPdf(): \Illuminate\Http\RedirectResponse
+    public function exportPdf()
     {
         $params = array_filter($this->data);
         $url    = route('reports.reminder-logs.pdf', $params);

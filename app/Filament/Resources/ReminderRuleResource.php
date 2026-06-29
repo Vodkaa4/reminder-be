@@ -37,7 +37,10 @@ class ReminderRuleResource extends Resource
                 Forms\Components\TextInput::make('days_before')
                     ->label('H- Hari')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->unique(modifyRuleUsing: function (\Illuminate\Validation\Rules\Unique $rule, Forms\Get $get) {
+                        return $rule->where('entity', $get('entity'));
+                    }, ignoreRecord: true),
                 Forms\Components\Select::make('channel')
                     ->label('Saluran')
                     ->options([
@@ -105,6 +108,7 @@ class ReminderRuleResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ReminderRule extends Model
 {
     protected $fillable = [
+        'entity',
         'days_before',
         'channel',
         'active',
@@ -19,6 +20,7 @@ class ReminderRule extends Model
         'active' => 'boolean',
         'is_recurring' => 'boolean',
         'recurring_interval_days' => 'integer',
+        'days_before' => 'integer',
     ];
     
     // Konstanta untuk nilai entity

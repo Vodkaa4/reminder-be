@@ -1,0 +1,468 @@
+[
+    {
+        "id": 1,
+        "entity": "permit",
+        "entity_id": "6",
+        "target_date": "2025-10-30T17:00:00.000000Z",
+        "rule_days": 60,
+        "recipient": "test@example.com",
+        "channel": "email",
+        "status": "sent",
+        "meta": null,
+        "created_at": "2025-08-31T21:05:36.000000Z",
+        "updated_at": "2025-08-31T21:05:36.000000Z"
+    },
+    {
+        "id": 6,
+        "entity": "permit",
+        "entity_id": "10",
+        "target_date": "2025-10-25T17:00:00.000000Z",
+        "rule_days": 30,
+        "recipient": "eksonindo@com.id",
+        "channel": "email",
+        "status": "sent",
+        "meta": [],
+        "created_at": "2025-09-25T23:58:42.000000Z",
+        "updated_at": "2025-09-25T23:58:42.000000Z"
+    },
+    {
+        "id": 7,
+        "entity": "permit",
+        "entity_id": "11",
+        "target_date": "2025-10-10T17:00:00.000000Z",
+        "rule_days": 15,
+        "recipient": "eksonindo@com.id",
+        "channel": "email",
+        "status": "failed",
+        "meta": {
+            "error": "Expected response code \"354\" but got code \"550\", with message \"550 5.7.0 Too many emails per second. Please upgrade your plan https:\/\/mailtrap.io\/billing\/plans\/testing\"."
+        },
+        "created_at": "2025-09-25T23:58:43.000000Z",
+        "updated_at": "2025-09-25T23:58:43.000000Z"
+    },
+    {
+        "id": 8,
+        "entity": "permit",
+        "entity_id": "12",
+        "target_date": "2025-10-10T17:00:00.000000Z",
+        "rule_days": 15,
+        "recipient": "irham@gmail.com",
+        "channel": "email",
+        "status": "failed",
+        "meta": {
+            "error": "Expected response code \"354\" but got code \"550\", with message \"550 5.7.0 Too many emails per second. Please upgrade your plan https:\/\/mailtrap.io\/billing\/plans\/testing\"."
+        },
+        "created_at": "2025-09-26T00:43:21.000000Z",
+        "updated_at": "2025-09-26T00:43:21.000000Z"
+    },
+    {
+        "id": 10,
+        "entity": "permit",
+        "entity_id": "1",
+        "target_date": "2025-10-19T17:00:00.000000Z",
+        "rule_days": 30,
+        "recipient": "sim.pic@example.com",
+        "channel": "email",
+        "status": "sent",
+        "meta": {
+            "permit_name": null
+        },
+        "created_at": "2025-09-26T00:49:29.000000Z",
+        "updated_at": "2025-09-26T00:49:29.000000Z"
+    },
+    {
+        "id": 11,
+        "entity": "permit",
+        "entity_id": "7",
+        "target_date": "2025-09-29T17:00:00.000000Z",
+        "rule_days": 30,
+        "recipient": "stnk.pic@example.com",
+        "channel": "email",
+        "status": "failed",
+        "meta": {
+            "error": "Expected response code \"354\" but got code \"550\", with message \"550 5.7.0 Too many emails per second. Please upgrade your plan https:\/\/mailtrap.io\/billing\/plans\/testing\"."
+        },
+        "created_at": "2025-09-26T00:49:30.000000Z",
+        "updated_at": "2025-09-26T00:49:30.000000Z"
+    },
+    {
+        "id": 12,
+        "entity": "permit",
+        "entity_id": "9",
+        "target_date": "2025-09-26T17:00:00.000000Z",
+        "rule_days": 30,
+        "recipient": "eksonindo@com.id",
+        "channel": "email",
+        "status": "failed",
+        "meta": {
+            "error": "Expected response code \"354\" but got code \"550\", with message \"550 5.7.0 Too many emails per second. Please upgrade your plan https:\/\/mailtrap.io\/billing\/plans\/testing\"."
+        },
+        "created_at": "2025-09-26T00:49:32.000000Z",
+        "updated_at": "2025-09-26T00:49:32.000000Z"
+    },
+    {
+        "id": 13,
+        "entity": "permit",
+        "entity_id": "11",
+        "target_date": "2025-10-10T17:00:00.000000Z",
+        "rule_days": 30,
+        "recipient": "eksonindo@com.id",
+        "channel": "email",
+        "status": "failed",
+        "meta": {
+            "error": "Expected response code \"354\" but got code \"550\", with message \"550 5.7.0 Too many emails per second. Please upgrade your plan https:\/\/mailtrap.io\/billing\/plans\/testing\"."
+        },
+        "created_at": "2025-09-26T00:49:32.000000Z",
+        "updated_at": "2025-09-26T00:49:32.000000Z"
+    },
+    {
+        "id": 14,
+        "entity": "permit",
+        "entity_id": "4",
+        "target_date": "2026-07-04T17:00:00.000000Z",
+        "rule_days": 30,
+        "recipient": "imb.pic@example.com",
+        "channel": "email",
+        "status": "sent",
+        "meta": [],
+        "created_at": "2026-06-21T20:40:42.000000Z",
+        "updated_at": "2026-06-21T20:40:42.000000Z"
+    },
+    {
+        "id": 15,
+        "entity": "permit",
+        "entity_id": "4",
+        "target_date": "2026-07-04T17:00:00.000000Z",
+        "rule_days": 60,
+        "recipient": "imb.pic@example.com",
+        "channel": "email",
+        "status": "failed",
+        "meta": {
+            "error": "Expected response code \"354\" but got code \"550\", with message \"550 5.7.0 Too many emails per second. Please upgrade your plan https:\/\/mailtrap.io\/billing\/plans\/testing\"."
+        },
+        "created_at": "2026-06-21T20:40:45.000000Z",
+        "updated_at": "2026-06-21T20:40:45.000000Z"
+    },
+    {
+        "id": 16,
+        "entity": "permit",
+        "entity_id": "4",
+        "target_date": "2026-07-04T17:00:00.000000Z",
+        "rule_days": 14,
+        "recipient": "imb.pic@example.com",
+        "channel": "email",
+        "status": "failed",
+        "meta": {
+            "error": "Expected response code \"354\" but got code \"550\", with message \"550 5.7.0 Too many emails per second. Please upgrade your plan https:\/\/mailtrap.io\/billing\/plans\/testing\"."
+        },
+        "created_at": "2026-06-21T20:40:47.000000Z",
+        "updated_at": "2026-06-21T20:40:47.000000Z"
+    },
+    {
+        "id": 17,
+        "entity": "permit",
+        "entity_id": "4",
+        "target_date": "2026-07-04T17:00:00.000000Z",
+        "rule_days": 15,
+        "recipient": "imb.pic@example.com",
+        "channel": "email",
+        "status": "failed",
+        "meta": {
+            "error": "Expected response code \"354\" but got code \"550\", with message \"550 5.7.0 Too many emails per second. Please upgrade your plan https:\/\/mailtrap.io\/billing\/plans\/testing\"."
+        },
+        "created_at": "2026-06-21T20:40:49.000000Z",
+        "updated_at": "2026-06-21T20:40:49.000000Z"
+    },
+    {
+        "id": 19,
+        "entity": "permit",
+        "entity_id": "1",
+        "target_date": "2026-07-23T17:00:00.000000Z",
+        "rule_days": 30,
+        "recipient": "legal@pt-eksonindo.com",
+        "channel": "email",
+        "status": "failed",
+        "meta": {
+            "error": "Expected response code \"354\" but got code \"550\", with message \"550 5.7.0 Too many emails per second. Please upgrade your plan https:\/\/mailtrap.io\/billing\/plans\/testing\"."
+        },
+        "created_at": "2026-06-24T01:17:06.000000Z",
+        "updated_at": "2026-06-24T01:17:06.000000Z"
+    },
+    {
+        "id": 20,
+        "entity": "permit",
+        "entity_id": "2",
+        "target_date": "2026-07-08T17:00:00.000000Z",
+        "rule_days": 30,
+        "recipient": "legal@pt-eksonindo.com",
+        "channel": "email",
+        "status": "failed",
+        "meta": {
+            "error": "Expected response code \"354\" but got code \"550\", with message \"550 5.7.0 Too many emails per second. Please upgrade your plan https:\/\/mailtrap.io\/billing\/plans\/testing\"."
+        },
+        "created_at": "2026-06-24T01:17:07.000000Z",
+        "updated_at": "2026-06-24T01:17:07.000000Z"
+    },
+    {
+        "id": 21,
+        "entity": "permit",
+        "entity_id": "3",
+        "target_date": "2026-06-27T17:00:00.000000Z",
+        "rule_days": 30,
+        "recipient": "legal@pt-eksonindo.com",
+        "channel": "email",
+        "status": "failed",
+        "meta": {
+            "error": "Expected response code \"354\" but got code \"550\", with message \"550 5.7.0 Too many emails per second. Please upgrade your plan https:\/\/mailtrap.io\/billing\/plans\/testing\"."
+        },
+        "created_at": "2026-06-24T01:17:09.000000Z",
+        "updated_at": "2026-06-24T01:17:09.000000Z"
+    },
+    {
+        "id": 22,
+        "entity": "permit",
+        "entity_id": "1",
+        "target_date": "2026-07-23T17:00:00.000000Z",
+        "rule_days": 60,
+        "recipient": "legal@pt-eksonindo.com",
+        "channel": "email",
+        "status": "failed",
+        "meta": {
+            "error": "Expected response code \"354\" but got code \"550\", with message \"550 5.7.0 Too many emails per second. Please upgrade your plan https:\/\/mailtrap.io\/billing\/plans\/testing\"."
+        },
+        "created_at": "2026-06-24T01:17:10.000000Z",
+        "updated_at": "2026-06-24T01:17:10.000000Z"
+    },
+    {
+        "id": 23,
+        "entity": "permit",
+        "entity_id": "2",
+        "target_date": "2026-07-08T17:00:00.000000Z",
+        "rule_days": 60,
+        "recipient": "legal@pt-eksonindo.com",
+        "channel": "email",
+        "status": "failed",
+        "meta": {
+            "error": "Expected response code \"354\" but got code \"550\", with message \"550 5.7.0 Too many emails per second. Please upgrade your plan https:\/\/mailtrap.io\/billing\/plans\/testing\"."
+        },
+        "created_at": "2026-06-24T01:17:11.000000Z",
+        "updated_at": "2026-06-24T01:17:11.000000Z"
+    },
+    {
+        "id": 24,
+        "entity": "permit",
+        "entity_id": "3",
+        "target_date": "2026-06-27T17:00:00.000000Z",
+        "rule_days": 60,
+        "recipient": "legal@pt-eksonindo.com",
+        "channel": "email",
+        "status": "failed",
+        "meta": {
+            "error": "Expected response code \"354\" but got code \"550\", with message \"550 5.7.0 Too many emails per second. Please upgrade your plan https:\/\/mailtrap.io\/billing\/plans\/testing\"."
+        },
+        "created_at": "2026-06-24T01:17:12.000000Z",
+        "updated_at": "2026-06-24T01:17:12.000000Z"
+    },
+    {
+        "id": 25,
+        "entity": "permit",
+        "entity_id": "3",
+        "target_date": "2026-06-27T17:00:00.000000Z",
+        "rule_days": 14,
+        "recipient": "legal@pt-eksonindo.com",
+        "channel": "email",
+        "status": "failed",
+        "meta": {
+            "error": "Expected response code \"354\" but got code \"550\", with message \"550 5.7.0 Too many emails per second. Please upgrade your plan https:\/\/mailtrap.io\/billing\/plans\/testing\"."
+        },
+        "created_at": "2026-06-24T01:17:14.000000Z",
+        "updated_at": "2026-06-24T01:17:14.000000Z"
+    },
+    {
+        "id": 26,
+        "entity": "permit",
+        "entity_id": "2",
+        "target_date": "2026-07-08T17:00:00.000000Z",
+        "rule_days": 15,
+        "recipient": "legal@pt-eksonindo.com",
+        "channel": "email",
+        "status": "sent",
+        "meta": [],
+        "created_at": "2026-06-24T01:17:19.000000Z",
+        "updated_at": "2026-06-24T01:17:19.000000Z"
+    },
+    {
+        "id": 27,
+        "entity": "permit",
+        "entity_id": "3",
+        "target_date": "2026-06-27T17:00:00.000000Z",
+        "rule_days": 15,
+        "recipient": "legal@pt-eksonindo.com",
+        "channel": "email",
+        "status": "failed",
+        "meta": {
+            "error": "Expected response code \"354\" but got code \"550\", with message \"550 5.7.0 Too many emails per second. Please upgrade your plan https:\/\/mailtrap.io\/billing\/plans\/testing\"."
+        },
+        "created_at": "2026-06-24T01:17:20.000000Z",
+        "updated_at": "2026-06-24T01:17:20.000000Z"
+    },
+    {
+        "id": 33,
+        "entity": "permit",
+        "entity_id": "2",
+        "target_date": "2026-07-08T17:00:00.000000Z",
+        "rule_days": 14,
+        "recipient": "jaddlyn@gmail.com (HRD Summary)",
+        "channel": "email",
+        "status": "sent",
+        "meta": {
+            "number": "STNK-002",
+            "type": "STNK"
+        },
+        "created_at": "2026-06-24T18:40:14.000000Z",
+        "updated_at": "2026-06-24T18:40:14.000000Z"
+    },
+    {
+        "id": 34,
+        "entity": "permit",
+        "entity_id": "6",
+        "target_date": "2026-06-29T17:00:00.000000Z",
+        "rule_days": 30,
+        "recipient": "mhmmdalif86@gmail.com",
+        "channel": "email",
+        "status": "sent",
+        "meta": [],
+        "created_at": "2026-06-25T07:13:09.000000Z",
+        "updated_at": "2026-06-25T07:13:09.000000Z"
+    },
+    {
+        "id": 35,
+        "entity": "permit",
+        "entity_id": "7",
+        "target_date": "2026-07-07T17:00:00.000000Z",
+        "rule_days": 30,
+        "recipient": "sandy@gmail.com",
+        "channel": "email",
+        "status": "sent",
+        "meta": [],
+        "created_at": "2026-06-25T07:13:11.000000Z",
+        "updated_at": "2026-06-25T07:13:11.000000Z"
+    },
+    {
+        "id": 36,
+        "entity": "permit",
+        "entity_id": "6",
+        "target_date": "2026-06-29T17:00:00.000000Z",
+        "rule_days": 60,
+        "recipient": "mhmmdalif86@gmail.com",
+        "channel": "email",
+        "status": "sent",
+        "meta": [],
+        "created_at": "2026-06-25T07:13:27.000000Z",
+        "updated_at": "2026-06-25T07:13:27.000000Z"
+    },
+    {
+        "id": 37,
+        "entity": "permit",
+        "entity_id": "7",
+        "target_date": "2026-07-07T17:00:00.000000Z",
+        "rule_days": 60,
+        "recipient": "sandy@gmail.com",
+        "channel": "email",
+        "status": "sent",
+        "meta": [],
+        "created_at": "2026-06-25T07:13:29.000000Z",
+        "updated_at": "2026-06-25T07:13:29.000000Z"
+    },
+    {
+        "id": 38,
+        "entity": "permit",
+        "entity_id": "6",
+        "target_date": "2026-06-29T17:00:00.000000Z",
+        "rule_days": 14,
+        "recipient": "mhmmdalif86@gmail.com",
+        "channel": "email",
+        "status": "sent",
+        "meta": [],
+        "created_at": "2026-06-25T07:13:33.000000Z",
+        "updated_at": "2026-06-25T07:13:33.000000Z"
+    },
+    {
+        "id": 39,
+        "entity": "permit",
+        "entity_id": "7",
+        "target_date": "2026-07-07T17:00:00.000000Z",
+        "rule_days": 14,
+        "recipient": "sandy@gmail.com",
+        "channel": "email",
+        "status": "sent",
+        "meta": [],
+        "created_at": "2026-06-25T07:13:35.000000Z",
+        "updated_at": "2026-06-25T07:13:35.000000Z"
+    },
+    {
+        "id": 40,
+        "entity": "permit",
+        "entity_id": "6",
+        "target_date": "2026-06-29T17:00:00.000000Z",
+        "rule_days": 15,
+        "recipient": "mhmmdalif86@gmail.com",
+        "channel": "email",
+        "status": "sent",
+        "meta": [],
+        "created_at": "2026-06-25T07:13:40.000000Z",
+        "updated_at": "2026-06-25T07:13:40.000000Z"
+    },
+    {
+        "id": 41,
+        "entity": "permit",
+        "entity_id": "7",
+        "target_date": "2026-07-07T17:00:00.000000Z",
+        "rule_days": 15,
+        "recipient": "sandy@gmail.com",
+        "channel": "email",
+        "status": "sent",
+        "meta": [],
+        "created_at": "2026-06-25T07:13:45.000000Z",
+        "updated_at": "2026-06-25T07:13:45.000000Z"
+    },
+    {
+        "id": 42,
+        "entity": "permit",
+        "entity_id": "8",
+        "target_date": "2026-07-01T17:00:00.000000Z",
+        "rule_days": 30,
+        "recipient": "mhmmdalif86@gmail.com",
+        "channel": "email",
+        "status": "sent",
+        "meta": [],
+        "created_at": "2026-06-25T09:02:30.000000Z",
+        "updated_at": "2026-06-25T09:02:30.000000Z"
+    },
+    {
+        "id": 43,
+        "entity": "permit",
+        "entity_id": "8",
+        "target_date": "2026-07-01T17:00:00.000000Z",
+        "rule_days": 60,
+        "recipient": "mhmmdalif86@gmail.com",
+        "channel": "email",
+        "status": "sent",
+        "meta": [],
+        "created_at": "2026-06-25T09:02:33.000000Z",
+        "updated_at": "2026-06-25T09:02:33.000000Z"
+    },
+    {
+        "id": 44,
+        "entity": "permit",
+        "entity_id": "8",
+        "target_date": "2026-07-01T17:00:00.000000Z",
+        "rule_days": 15,
+        "recipient": "mhmmdalif86@gmail.com",
+        "channel": "email",
+        "status": "sent",
+        "meta": [],
+        "created_at": "2026-06-25T09:02:35.000000Z",
+        "updated_at": "2026-06-25T09:02:35.000000Z"
+    }
+]

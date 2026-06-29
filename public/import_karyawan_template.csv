@@ -1,0 +1,6 @@
+NIP,Nama,Email,Atasan,Karyawan Tetap,Tanggal Mulai Kontrak,Tanggal Akhir Kontrak,Tanggal Resign,Departemen,Bagian,Jabatan,Lokasi
+1001,Andi Setyawan,andi@example.com,,1,2020-01-01,,,IT,Developer,Software Engineer,Jakarta
+2000,Budi Santoso,budi@example.com,Andi Setyawan,0,2025-01-01,2027-12-31,,HR,Recruitment,HR Staff,Bandung
+9060,Rina Puspita,rina.puspita@example.com,Andi Setyawan,0,2025-01-01,2026-08-25,,IT,Support,Staff,Jakarta
+9030,Aditya Pratama,aditya.p@example.com,Andi Setyawan,0,2025-01-01,2026-07-26,,Finance,Accounting,Staff,Surabaya
+9007,Sari Melati,sari.melati@example.com,Andi Setyawan,0,2025-01-01,2026-07-03,,Operations,Logistics,Driver,Jakarta

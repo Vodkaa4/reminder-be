@@ -32,6 +32,8 @@ class AdminPanelProvider extends PanelProvider
             ->profile(\App\Filament\Pages\EditProfile::class) // Custom with Avatar
             ->spa() // Enable SPA mode for faster navigation
             ->brandName('PT Eksonindo MPI')
+            ->brandLogo(asset('images/logo.png'))
+            ->brandLogoHeight('3rem')
             ->font('Inter')
             ->colors([
                 'primary' => Color::Indigo,

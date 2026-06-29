@@ -10,5 +10,6 @@ Artisan::command('inspire', function () {
 
 app(Schedule::class)->command('contracts:send-expiring')->dailyAt('08:00');
 app(Schedule::class)->command('permits:send-expiring')->dailyAt('08:00');
-app(Schedule::class)->command('reminders:run')->dailyAt('08:00');
+app(Schedule::class)->command('reminders:run')->everyMinute();
 app(Schedule::class)->command('permits:update-statuses')->dailyAt('00:00');
+    

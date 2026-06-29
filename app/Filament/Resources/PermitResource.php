@@ -101,14 +101,22 @@ class PermitResource extends Resource
                 Tables\Columns\TextColumn::make('calculated_status')
                     ->label('Status')
                     ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'active' => 'Aktif',
+                        'renewal' => 'Masa Perpanjangan',
+                        'expired' => 'Kedaluwarsa',
+                        default => $state,
+                    })
                     ->color(fn (string $state): string => match ($state) {
                         'active' => 'success',
                         'renewal' => 'warning',
                         'expired' => 'danger',
+                        default => 'gray',
                     }),
                 Tables\Columns\TextColumn::make('attachment_path')
                     ->label('Lampiran')
-                    ->formatStateUsing(fn ($state) => $state ? 'Unduh' : '-')
+                    ->default('-')
+                    ->formatStateUsing(fn ($state) => ($state && $state !== '-') ? 'Unduh' : '-')
                     ->url(fn ($record) => $record->attachment_path ? route('permits.download', ['permit' => $record->id]) : null, shouldOpenInNewTab: true)
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
@@ -123,7 +131,22 @@ class PermitResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('type')
+                    ->label('Jenis Izin')
+                    ->options(fn () => Permit::distinct()->pluck('type', 'type')->toArray()),
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'active' => 'Aktif',
+                        'renewal' => 'Masa Perpanjangan',
+                        'expired' => 'Kedaluwarsa',
+                    ]),
+                Tables\Filters\Filter::make('permit_expiring_soon_60')
+                    ->label('Segera Habis (≤60 hari)')
+                    ->query(fn (Builder $query) => 
+                        $query->where('expires_at', '<=', today()->addDays(60))
+                              ->where('expires_at', '>=', today())
+                    ),
             ])
             ->actions([
                 Tables\Actions\Action::make('download_attachment')
@@ -144,6 +167,7 @@ class PermitResource extends Resource
                         $record->update(['attachment_path' => null]);
                     }),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
