@@ -54,9 +54,10 @@ class TestReminders extends Command
 
         // Create test permit
         $permit = Permit::create([
+            'employee_id' => $employee->id,
             'type' => 'SIM',
             'number' => 'TEST-' . rand(1000, 9999),
-            'holder' => 'Test Employee',
+            'holder' => $employee->name,
             'asset_location' => 'Jakarta',
             'issued_at' => Carbon::today()->subDays(365),
             'expires_at' => $targetDate,

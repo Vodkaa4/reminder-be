@@ -53,9 +53,10 @@ class AdminPanelProvider extends PanelProvider
                 \App\Filament\Widgets\DepartmentBarChart::class,
             ])
             ->navigationGroups([
-                'Utama',
+                'Sistem & Laporan',
                 'Manajemen Pengguna',
             ])
+
             ->maxContentWidth('full')
             ->sidebarCollapsibleOnDesktop()
             ->middleware([

@@ -18,6 +18,7 @@ class ReminderLogResource extends Resource
     protected static ?string $model = ReminderLog::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clock';
+    protected static ?string $navigationGroup = 'Sistem & Laporan';
 
     protected static ?string $navigationLabel = 'Log Pengingat';
     protected static ?string $modelLabel = 'Log Pengingat';

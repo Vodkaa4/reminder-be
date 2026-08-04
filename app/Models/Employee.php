@@ -18,4 +18,9 @@ class Employee extends Model
         'contract_end' => 'date',
         'resign_date' => 'date',
     ];
+
+    public function contractHistories()
+    {
+        return $this->hasMany(ContractHistory::class);
+    }
 }

@@ -100,6 +100,8 @@ class EmployeeResource extends Resource
                             ->maxLength(191)
                             ->placeholder('Plant CILAMPENI'),
                     ])->columns(2),
+
+                // Repeater removed to use RelationManager instead
             ]);
     }
 
@@ -239,7 +241,7 @@ class EmployeeResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\ContractHistoriesRelationManager::class,
         ];
     }
 
@@ -247,8 +249,8 @@ class EmployeeResource extends Resource
     {
         return [
             'index' => Pages\ListEmployees::route('/'),
-            // 'create' => Pages\CreateEmployee::route('/create'), // Disabled to use Modal
-            // 'edit' => Pages\EditEmployee::route('/{record}/edit'), // Disabled to use Modal
+            'create' => Pages\CreateEmployee::route('/create'),
+            'edit' => Pages\EditEmployee::route('/{record}/edit'),
         ];
     }
 }

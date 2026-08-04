@@ -38,7 +38,8 @@ class PermitResource extends Resource
                     ->maxLength(100),
                 Forms\Components\TextInput::make('holder')
                     ->label('Pemegang')
-                    ->maxLength(100),
+                    ->required()
+                    ->maxLength(150),
                 Forms\Components\TextInput::make('asset_location')
                     ->label('Lokasi Aset')
                     ->maxLength(50),
@@ -77,6 +78,8 @@ class PermitResource extends Resource
                     ->acceptedFileTypes(['application/pdf','image/*'])
                     ->maxSize(10240)
                     ->helperText('Upload file terkait izin (tersimpan privat).'),
+
+                // Repeater removed to use RelationManager instead
             ]);
     }
 
@@ -219,7 +222,7 @@ class PermitResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\PermitHistoriesRelationManager::class,
         ];
     }
 
@@ -227,8 +230,8 @@ class PermitResource extends Resource
     {
         return [
             'index' => Pages\ListPermits::route('/'),
-            // 'create' => Pages\CreatePermit::route('/create'), // Disabled to use Modal
-            // 'edit' => Pages\EditPermit::route('/{record}/edit'), // Disabled to use Modal
+            'create' => Pages\CreatePermit::route('/create'),
+            'edit' => Pages\EditPermit::route('/{record}/edit'),
         ];
     }
 }

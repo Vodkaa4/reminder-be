@@ -8,15 +8,29 @@ use Carbon\Carbon;
 class Permit extends Model
 {
     protected $fillable = [
-        'type','number','holder','asset_location',
-        'issued_at','expires_at','pic','status',
-        'notes','attachment_path','reminders_muted', 'progress_status',
+        'type',
+        'number',
+        'holder',
+        'asset_location',
+        'issued_at',
+        'expires_at',
+        'pic',
+        'status',
+        'notes',
+        'attachment_path',
+        'reminders_muted',
+        'progress_status',
     ];
 
     protected $casts = [
         'issued_at'  => 'date',
         'expires_at' => 'date',
     ];
+
+    public function permitHistories()
+    {
+        return $this->hasMany(PermitHistory::class);
+    }
 
     /**
      * Get the calculated status based on expiry date
