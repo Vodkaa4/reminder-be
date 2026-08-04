@@ -32,4 +32,19 @@ class ListEmployees extends ListRecords
                 }),
         ];
     }
+
+    public function getTabs(): array
+    {
+        return [
+            'Semua' => \Filament\Resources\Components\Tab::make(),
+            'Karyawan Tetap' => \Filament\Resources\Components\Tab::make()
+                ->modifyQueryUsing(fn ($query) => $query->where('is_permanent', true)),
+            'Kontrak Aktif' => \Filament\Resources\Components\Tab::make()
+                ->modifyQueryUsing(fn ($query) => $query->where('is_permanent', false)->where('contract_end', '>', today()->addDays(30))),
+            'Mendekati Kadaluarsa' => \Filament\Resources\Components\Tab::make()
+                ->modifyQueryUsing(fn ($query) => $query->where('is_permanent', false)->where('contract_end', '<=', today()->addDays(30))->where('contract_end', '>=', today())),
+            'Kadaluarsa' => \Filament\Resources\Components\Tab::make()
+                ->modifyQueryUsing(fn ($query) => $query->where('is_permanent', false)->where('contract_end', '<', today())),
+        ];
+    }
 }

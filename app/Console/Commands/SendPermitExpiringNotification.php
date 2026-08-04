@@ -37,6 +37,7 @@ class SendPermitExpiringNotification extends Command
 
         // Fetch only relevant permits from DB
         $permits = Permit::whereIn('status', ['active', 'renewal', 'expired'])
+            ->where('reminders_muted', false)
             ->whereNotNull('expires_at')
             ->where(function ($query) use ($targetDates, $criticalThreshold) {
                 $query->whereDate('expires_at', '<=', $criticalThreshold);
@@ -60,7 +61,7 @@ class SendPermitExpiringNotification extends Command
             $diff = clone $today;
             $diff = $diff->diffInDays($permit->expires_at, false);
 
-            if ($diff <= 7) {
+            if ($diff <= 7 && $diff >= -7) {
                 // Spam Kritis
                 $critical->push($permit);
                 $hasDataToSend = true;

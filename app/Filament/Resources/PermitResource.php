@@ -56,6 +56,17 @@ class PermitResource extends Resource
                 Forms\Components\Textarea::make('notes')
                     ->label('Catatan')
                     ->columnSpanFull(),
+                Forms\Components\Select::make('progress_status')
+                    ->label('Status Proses (Tracking)')
+                    ->options([
+                        'Pendaftaran' => 'Pendaftaran',
+                        'Peninjauan' => 'Peninjauan',
+                        'Penilaian' => 'Penilaian',
+                        'Dalam Proses Perpanjangan' => 'Dalam Proses Perpanjangan',
+                        'Selesai' => 'Selesai',
+                    ])
+                    ->nullable()
+                    ->placeholder('Pilih status (jika sedang diproses)'),
                 Forms\Components\FileUpload::make('attachment_path')
                     ->label('Lampiran')
                     ->disk('private')
@@ -98,6 +109,11 @@ class PermitResource extends Resource
                     ->searchable()
                     ->copyable()
                     ->url(fn ($record) => $record->pic ? 'mailto:'.$record->pic : null),
+                Tables\Columns\TextColumn::make('progress_status')
+                    ->label('Status Proses')
+                    ->badge()
+                    ->color('info')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('calculated_status')
                     ->label('Status')
                     ->badge()
@@ -113,6 +129,13 @@ class PermitResource extends Resource
                         'expired' => 'danger',
                         default => 'gray',
                     }),
+                Tables\Columns\IconColumn::make('reminders_muted')
+                    ->label('Diproses')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-pause-circle')
+                    ->falseIcon('')
+                    ->trueColor('warning')
+                    ->tooltip('Notifikasi ditunda (Sedang diproses)'),
                 Tables\Columns\TextColumn::make('attachment_path')
                     ->label('Lampiran')
                     ->default('-')
@@ -141,14 +164,28 @@ class PermitResource extends Resource
                         'renewal' => 'Masa Perpanjangan',
                         'expired' => 'Kedaluwarsa',
                     ]),
-                Tables\Filters\Filter::make('permit_expiring_soon_60')
-                    ->label('Segera Habis (≤60 hari)')
-                    ->query(fn (Builder $query) => 
-                        $query->where('expires_at', '<=', today()->addDays(60))
-                              ->where('expires_at', '>=', today())
-                    ),
             ])
             ->actions([
+                Tables\Actions\Action::make('mute')
+                    ->label('Tandai Diproses')
+                    ->icon('heroicon-o-pause-circle')
+                    ->color('warning')
+                    ->action(function (Permit $record) {
+                        $record->update(['reminders_muted' => true]);
+                    })
+                    ->visible(fn (Permit $record) => !$record->reminders_muted)
+                    ->requiresConfirmation()
+                    ->modalHeading('Tunda Notifikasi')
+                    ->modalDescription('Tandai dokumen izin ini sedang diproses perpanjangan? Notifikasi akan dihentikan sementara.'),
+                Tables\Actions\Action::make('unmute')
+                    ->label('Batal Diproses')
+                    ->icon('heroicon-o-play-circle')
+                    ->color('success')
+                    ->action(function (Permit $record) {
+                        $record->update(['reminders_muted' => false]);
+                    })
+                    ->visible(fn (Permit $record) => $record->reminders_muted)
+                    ->requiresConfirmation(),
                 Tables\Actions\Action::make('download_attachment')
                     ->label('Unduh Lampiran')
                     ->icon('heroicon-o-arrow-down-tray')

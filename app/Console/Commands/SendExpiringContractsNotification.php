@@ -35,6 +35,9 @@ class SendExpiringContractsNotification extends Command
 
         // Fetch only the relevant employees from the database
         $employees = Employee::whereNotNull('contract_end')
+            ->where('is_permanent', false)
+            ->whereNull('resign_date')
+            ->where('reminders_muted', false)
             ->where(function ($query) use ($targetDates, $criticalThreshold) {
                 $query->whereDate('contract_end', '<=', $criticalThreshold);
                 if (!empty($targetDates)) {
@@ -58,8 +61,8 @@ class SendExpiringContractsNotification extends Command
             $diff = clone $today;
             $diff = $diff->diffInDays($emp->contract_end, false); 
 
-            // Cek Critical <= 7
-            if ($diff <= 7) {
+            // Cek Critical <= 7 dan >= -7 (maksimal 7 hari setelah expired)
+            if ($diff <= 7 && $diff >= -7) {
                 // Untuk "critical spam", kita selalu tangkap dan laporkan
                 $critical->push($emp);
                 $hasDataToSend = true;

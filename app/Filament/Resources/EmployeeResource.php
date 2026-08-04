@@ -143,6 +143,13 @@ class EmployeeResource extends Resource
                         !$record->is_permanent && $record->contract_end && $record->contract_end < today() => 'Kontrak Habis',
                         default => 'Karyawan Kontrak',
                     }),
+                Tables\Columns\IconColumn::make('reminders_muted')
+                    ->label('Diproses')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-pause-circle')
+                    ->falseIcon('')
+                    ->trueColor('warning')
+                    ->tooltip('Notifikasi ditunda (Sedang diproses)'),
                 Tables\Columns\TextColumn::make('contract_start')
                     ->label('Mulai Kontrak')
                     ->date()
@@ -189,23 +196,28 @@ class EmployeeResource extends Resource
                     ->label('Status Kepegawaian')
                     ->placeholder('Semua')
                     ->trueLabel('Tetap')
-                    ->falseLabel('Kontrak'),
-                Tables\Filters\Filter::make('contract_expiring_soon_30')
-                    ->label('Kontrak Segera Habis (≤30 hari)')
-                    ->query(fn (Builder $query) => 
-                        $query->where('contract_end', '<=', today()->addDays(30))
-                              ->where('contract_end', '>=', today())
-                              ->where('is_permanent', false)
-                    ),
-                Tables\Filters\Filter::make('contract_expiring_soon_15')
-                ->label('Kontrak Segera Habis (≤15 hari)')
-                ->query(fn (Builder $query) => 
-                    $query->where('contract_end', '<=', today()->addDays(15))
-                            ->where('contract_end', '>=', today())
-                            ->where('is_permanent', false)
-                ),
             ])
             ->actions([
+                Tables\Actions\Action::make('mute')
+                    ->label('Tandai Diproses')
+                    ->icon('heroicon-o-pause-circle')
+                    ->color('warning')
+                    ->action(function (Employee $record) {
+                        $record->update(['reminders_muted' => true]);
+                    })
+                    ->visible(fn (Employee $record) => !$record->reminders_muted)
+                    ->requiresConfirmation()
+                    ->modalHeading('Tunda Notifikasi')
+                    ->modalDescription('Tandai data ini sedang diproses perpanjangan? Notifikasi akan dihentikan sementara.'),
+                Tables\Actions\Action::make('unmute')
+                    ->label('Batal Diproses')
+                    ->icon('heroicon-o-play-circle')
+                    ->color('success')
+                    ->action(function (Employee $record) {
+                        $record->update(['reminders_muted' => false]);
+                    })
+                    ->visible(fn (Employee $record) => $record->reminders_muted)
+                    ->requiresConfirmation(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])

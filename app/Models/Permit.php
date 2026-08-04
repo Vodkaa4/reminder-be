@@ -10,7 +10,7 @@ class Permit extends Model
     protected $fillable = [
         'type','number','holder','asset_location',
         'issued_at','expires_at','pic','status',
-        'notes','attachment_path',
+        'notes','attachment_path','reminders_muted', 'progress_status',
     ];
 
     protected $casts = [

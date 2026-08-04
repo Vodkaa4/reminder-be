@@ -37,11 +37,14 @@ class TestReminders extends Command
 
         // Create test employee
         $employee = Employee::create([
+            'nip' => 'NIP' . rand(1000, 9999),
             'name' => 'Test Employee',
-            'email' => 'test.employee@company.com',
+            'email' => 'test.employee' . rand(1000, 9999) . '@company.com',
             'position' => 'Software Developer',
-            'department' => 'IT',
+            'dept' => 'IT',
+            'location' => 'Jakarta',
             'is_permanent' => false,
+            'contract_start' => Carbon::today()->subDays(365)->format('Y-m-d'),
             'contract_end' => $targetDate,
             'resign_date' => null,
         ]);
@@ -57,7 +60,7 @@ class TestReminders extends Command
             'asset_location' => 'Jakarta',
             'issued_at' => Carbon::today()->subDays(365),
             'expires_at' => $targetDate,
-            'pic' => 'hr@company.com',
+            'pic' => 'coldh4rtd@gmail.com',
             'status' => 'active',
             'notes' => 'Test permit for reminder system',
         ]);

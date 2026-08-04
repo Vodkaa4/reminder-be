@@ -1,3 +1,6 @@
 Nomor,Jenis Izin,Pemegang,Lokasi Aset,Tanggal Terbit,Tanggal Kedaluwarsa,Email PIC,Catatan
-IZIN-001,Izin Usaha,PT Eksonindo MPI,Pabrik CILAMPENI,2023-01-01,2024-12-31,pic@example.com,Contoh catatan izin
-IZIN-002,KIR Kendaraan,B 1234 ABC,Kendaraan Operasional,,2024-06-30,driver@example.com,Perpanjang segera
+IZIN-100,Izin Usaha,PT Eksonindo MPI,Pabrik CILAMPENI,2023-01-01,2028-12-31,pic@example.com,Aman (Jangka Panjang)
+IZIN-001,SIPP,PT Eksonindo MPI,Pusat Jakarta,2025-01-01,2026-09-02,pic@example.com,Target Reminder H-60
+IZIN-002,AMDAL,PT Eksonindo MPI,Pabrik Bandung,2025-01-01,2026-08-03,pic@example.com,Target Reminder H-30
+IZIN-003,KIR Kendaraan,B 1234 ABC,Kendaraan Operasional,2025-01-01,2026-07-11,driver@example.com,Target Reminder H-7
+IZIN-004,IMB,PT Eksonindo MPI,Cabang Surabaya,2020-01-01,2026-07-01,pic@example.com,Sudah Expired

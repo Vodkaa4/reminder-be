@@ -9,7 +9,7 @@ class Employee extends Model
     protected $fillable = [
         'nip', 'name', 'email', 'supervisor', 'is_permanent',
         'contract_start', 'contract_end', 'resign_date',
-        'dept', 'sect', 'position', 'location'
+        'dept', 'sect', 'position', 'location', 'reminders_muted'
     ];
 
     protected $casts = [

@@ -43,6 +43,7 @@ class RunDailyReminders extends Command
                 $employees = Employee::query()
                     ->where('is_permanent', false)
                     ->whereNull('resign_date')
+                    ->where('reminders_muted', false)
                     ->whereDate('contract_end', '<=', $target)
                     ->whereDate('contract_end', '>=', $today)
                     ->get();
@@ -69,6 +70,7 @@ class RunDailyReminders extends Command
                     ->whereDate('expires_at', '<=', $target)
                     ->whereDate('expires_at', '>=', $today)
                     ->where('status', '!=', 'expired')
+                    ->where('reminders_muted', false)
                     ->whereNotNull('pic')
                     ->get();
 

@@ -1,3 +1,6 @@
 NIP,Nama,Email,Atasan,Karyawan Tetap (1=Tetap, 0=Kontrak),Tanggal Mulai Kontrak,Tanggal Akhir Kontrak,Tanggal Resign,Departemen,Bagian,Jabatan,Lokasi
-EMP-001,Budi Santoso,budi@example.com,,1,2023-01-01,,,,IT,Backend,Senior Developer,Jakarta
-EMP-002,Siti Aminah,siti@example.com,Budi Santoso,0,2023-06-01,2024-05-31,,,HR,Recruitment,Staff,Jakarta
+EMP-100,Budi Santoso,budi@example.com,,1,2023-01-01,,,,IT,Backend,Senior Developer,Jakarta
+EMP-001,Rina Puspita,rina@example.com,Budi Santoso,0,2025-01-01,2026-09-02,,,IT,Support,Staff,Jakarta
+EMP-002,Aditya Pratama,aditya@example.com,Budi Santoso,0,2025-01-01,2026-08-03,,,Finance,Accounting,Staff,Surabaya
+EMP-003,Sari Melati,sari@example.com,Budi Santoso,0,2025-01-01,2026-07-11,,,Operations,Logistics,Driver,Jakarta
+EMP-004,Joko Susilo,joko@example.com,Budi Santoso,0,2025-01-01,2026-07-01,,,Marketing,Sales,Salesman,Surabaya
