@@ -132,19 +132,19 @@ class PermitResource extends Resource
                         'expired' => 'danger',
                         default => 'gray',
                     }),
-                Tables\Columns\IconColumn::make('reminders_muted')
-                    ->label('Diproses')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-pause-circle')
-                    ->falseIcon('')
-                    ->trueColor('warning')
-                    ->tooltip('Notifikasi ditunda (Sedang diproses)'),
-                Tables\Columns\TextColumn::make('attachment_path')
-                    ->label('Lampiran')
+                Tables\Columns\TextColumn::make('progress_status')
+                    ->label('Tracking')
+                    ->badge()
                     ->default('-')
-                    ->formatStateUsing(fn ($state) => ($state && $state !== '-') ? 'Unduh' : '-')
-                    ->url(fn ($record) => $record->attachment_path ? route('permits.download', ['permit' => $record->id]) : null, shouldOpenInNewTab: true)
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->color(fn (string $state): string => match ($state) {
+                        'Pendaftaran' => 'info',
+                        'Peninjauan' => 'warning',
+                        'Penilaian' => 'primary',
+                        'Dalam Proses Perpanjangan' => 'warning',
+                        'Selesai' => 'success',
+                        default => 'gray',
+                    }),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Dibuat Pada')
                     ->dateTime()
@@ -169,45 +169,29 @@ class PermitResource extends Resource
                     ]),
             ])
             ->actions([
-                Tables\Actions\Action::make('mute')
-                    ->label('Tandai Diproses')
-                    ->icon('heroicon-o-pause-circle')
-                    ->color('warning')
-                    ->action(function (Permit $record) {
-                        $record->update(['reminders_muted' => true]);
-                    })
-                    ->visible(fn (Permit $record) => !$record->reminders_muted)
-                    ->requiresConfirmation()
-                    ->modalHeading('Tunda Notifikasi')
-                    ->modalDescription('Tandai dokumen izin ini sedang diproses perpanjangan? Notifikasi akan dihentikan sementara.'),
-                Tables\Actions\Action::make('unmute')
-                    ->label('Batal Diproses')
-                    ->icon('heroicon-o-play-circle')
-                    ->color('success')
-                    ->action(function (Permit $record) {
-                        $record->update(['reminders_muted' => false]);
-                    })
-                    ->visible(fn (Permit $record) => $record->reminders_muted)
-                    ->requiresConfirmation(),
-                Tables\Actions\Action::make('download_attachment')
-                    ->label('Unduh Lampiran')
-                    ->icon('heroicon-o-arrow-down-tray')
-                    ->url(fn ($record) => $record->attachment_path ? route('permits.download', ['permit' => $record->id]) : null, shouldOpenInNewTab: true)
-                    ->visible(fn ($record) => filled($record->attachment_path)),
-                Tables\Actions\Action::make('delete_attachment')
-                    ->label('Hapus Lampiran')
-                    ->icon('heroicon-o-trash')
-                    ->color('danger')
-                    ->requiresConfirmation()
-                    ->visible(fn ($record) => filled($record->attachment_path))
-                    ->action(function ($record) {
-                        if ($record->attachment_path && \Illuminate\Support\Facades\Storage::disk('private')->exists($record->attachment_path)) {
-                            \Illuminate\Support\Facades\Storage::disk('private')->delete($record->attachment_path);
-                        }
-                        $record->update(['attachment_path' => null]);
-                    }),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\Action::make('download_attachment')
+                        ->label('Unduh Lampiran')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->url(fn ($record) => $record->attachment_path ? route('permits.download', ['permit' => $record->id]) : null, shouldOpenInNewTab: true)
+                        ->visible(fn ($record) => filled($record->attachment_path)),
+                    Tables\Actions\Action::make('delete_attachment')
+                        ->label('Hapus Lampiran')
+                        ->icon('heroicon-o-trash')
+                        ->color('danger')
+                        ->requiresConfirmation()
+                        ->visible(fn ($record) => filled($record->attachment_path))
+                        ->action(function ($record) {
+                            if ($record->attachment_path && \Illuminate\Support\Facades\Storage::disk('private')->exists($record->attachment_path)) {
+                                \Illuminate\Support\Facades\Storage::disk('private')->delete($record->attachment_path);
+                            }
+                            $record->update(['attachment_path' => null]);
+                        }),
+                    Tables\Actions\DeleteAction::make(),
+                ])->icon('heroicon-m-ellipsis-vertical')->tooltip('Aksi'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -230,8 +214,9 @@ class PermitResource extends Resource
     {
         return [
             'index' => Pages\ListPermits::route('/'),
-            'create' => Pages\CreatePermit::route('/create'),
-            'edit' => Pages\EditPermit::route('/{record}/edit'),
+            // 'create' => Pages\CreatePermit::route('/create'),
+            // 'edit' => Pages\EditPermit::route('/{record}/edit'),
+            'view' => Pages\ViewPermit::route('/{record}'),
         ];
     }
 }

@@ -1,36 +1,44 @@
 <style>
-    /* Clean Light Gray Background */
-    body, .fi-body, .fi-layout {
+    /* Clean Light Gray Background (Light Mode Only) */
+    html:not(.dark) body, html:not(.dark) .fi-body, html:not(.dark) .fi-layout {
         background-color: #f8fafc !important; /* bg-slate-50 */
     }
 
     /* Clean Sidebar */
-    aside.fi-sidebar {
+    html:not(.dark) aside.fi-sidebar {
         background-color: #ffffff !important;
         border-right: 1px solid #e2e8f0 !important; /* border-slate-200 */
+    }
+    aside.fi-sidebar {
         box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02) !important;
         z-index: 20 !important;
     }
 
     /* Clean Topbar */
-    header.fi-topbar {
+    html:not(.dark) header.fi-topbar {
         background-color: rgba(255, 255, 255, 0.85) !important;
-        backdrop-filter: blur(12px) !important;
         border-bottom: 1px solid #e2e8f0 !important;
+    }
+    header.fi-topbar {
+        backdrop-filter: blur(12px) !important;
         box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02) !important;
     }
 
     /* Professional Card & Widget Styling */
-    .fi-section, .fi-widget {
+    html:not(.dark) .fi-section, html:not(.dark) .fi-widget {
         background-color: #ffffff !important;
         border: 1px solid #e2e8f0 !important;
+    }
+    .fi-section, .fi-widget {
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -2px rgba(0, 0, 0, 0.02) !important;
         border-radius: 0.75rem !important; /* 12px rounded borders */
         transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .fi-section:hover, .fi-widget:hover {
+    html:not(.dark) .fi-section:hover, html:not(.dark) .fi-widget:hover {
         box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -4px rgba(0, 0, 0, 0.02) !important;
+    }
+    .fi-section:hover, .fi-widget:hover {
         transform: translateY(-2px);
     }
 
@@ -38,7 +46,7 @@
     .fi-ta-record {
         transition: background-color 0.15s ease;
     }
-    .fi-ta-record:hover {
+    html:not(.dark) .fi-ta-record:hover {
         background-color: #f1f5f9 !important; /* bg-slate-100 */
     }
 
@@ -70,3 +78,4 @@
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15) !important;
     }
 </style>
+

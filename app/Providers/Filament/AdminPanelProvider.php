@@ -28,18 +28,19 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(Login::class)
+            ->passwordReset()
             // ->profile() // Default
             ->profile(\App\Filament\Pages\EditProfile::class) // Custom with Avatar
             ->spa() // Enable SPA mode for faster navigation
             ->brandName('PT Eksonindo MPI')
             ->brandLogo(asset('images/logo.png'))
+            ->favicon(asset('images/logo.png'))
             ->brandLogoHeight('3rem')
             ->font('Inter')
             ->colors([
                 'primary' => Color::Indigo,
                 'gray' => Color::Slate,
             ])
-            ->darkMode(false) // Force Light Mode
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -76,6 +77,10 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 \Filament\View\PanelsRenderHook::HEAD_END,
                 fn (): string => \Illuminate\Support\Facades\Blade::render('@include("filament.custom.theme")'),
+            )
+            ->renderHook(
+                \Filament\View\PanelsRenderHook::USER_MENU_BEFORE,
+                fn (): string => \Illuminate\Support\Facades\Blade::render('@include("filament.components.topbar-theme-switcher")'),
             );
     }
 }

@@ -42,6 +42,11 @@ class ReminderLogReport extends Page implements HasForms
         $this->searched = true;
     }
 
+    public function updatedData(): void
+    {
+        $this->search();
+    }
+
     public function form(Form $form): Form
     {
         return $form
@@ -57,7 +62,8 @@ class ReminderLogReport extends Page implements HasForms
                                     'contract' => 'Kontrak Karyawan',
                                 ])
                                 ->placeholder('Semua Entitas')
-                                ->native(false),
+                                ->native(false)
+                                ->live(debounce: 500),
 
                             Select::make('status')
                                 ->label('Status')
@@ -67,7 +73,8 @@ class ReminderLogReport extends Page implements HasForms
                                     'skipped' => 'Dilewati',
                                 ])
                                 ->placeholder('Semua Status')
-                                ->native(false),
+                                ->native(false)
+                                ->live(debounce: 500),
 
                             Select::make('rule_days')
                                 ->label('Aturan Pengingat (H- Hari)')
@@ -78,16 +85,19 @@ class ReminderLogReport extends Page implements HasForms
                                     90 => '90 hari',
                                 ])
                                 ->placeholder('Semua Aturan')
-                                ->native(false),
+                                ->native(false)
+                                ->live(debounce: 500),
                         ]),
                         Grid::make(2)->schema([
                             DatePicker::make('created_from')
                                 ->label('Tanggal Kirim (Dari)')
-                                ->native(false),
+                                ->native(false)
+                                ->live(debounce: 500),
 
                             DatePicker::make('created_until')
                                 ->label('Tanggal Kirim (Sampai)')
-                                ->native(false),
+                                ->native(false)
+                                ->live(debounce: 500),
                         ]),
                     ]),
             ])

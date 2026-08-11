@@ -41,11 +41,21 @@ class EmployeeResource extends Resource
                             ->required()
                             ->maxLength(191)
                             ->unique(ignoreRecord: true)
+                            ->regex('/^[a-zA-Z0-9\-]+$/')
+                            ->validationMessages([
+                                'regex' => 'NIP hanya boleh berisi huruf, angka, dan tanda strip (-).',
+                            ])
+                            ->extraInputAttributes(['oninput' => "this.value = this.value.replace(/[^a-zA-Z0-9\-]/g, '')"])
                             ->placeholder('EMP-0001'),
                         Forms\Components\TextInput::make('name')
                             ->label('Nama')
                             ->required()
                             ->maxLength(191)
+                            ->regex('/^[\pL\s]+$/u')
+                            ->validationMessages([
+                                'regex' => 'Nama hanya boleh berisi huruf dan spasi.',
+                            ])
+                            ->extraInputAttributes(['oninput' => "this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"])
                             ->placeholder('Nama lengkap karyawan'),
                         Forms\Components\TextInput::make('email')
                             ->email()
@@ -56,6 +66,11 @@ class EmployeeResource extends Resource
                         Forms\Components\TextInput::make('supervisor')
                             ->label('Atasan')
                             ->maxLength(191)
+                            ->regex('/^[\pL\s]+$/u')
+                            ->validationMessages([
+                                'regex' => 'Nama Atasan hanya boleh berisi huruf dan spasi.',
+                            ])
+                            ->extraInputAttributes(['oninput' => "this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"])
                             ->placeholder('Nama atasan langsung'),
                     ])->columns(2),
 
@@ -93,6 +108,11 @@ class EmployeeResource extends Resource
                             ->label('Jabatan')
                             ->required()
                             ->maxLength(191)
+                            ->regex('/^[\pL\s]+$/u')
+                            ->validationMessages([
+                                'regex' => 'Jabatan hanya boleh berisi huruf dan spasi.',
+                            ])
+                            ->extraInputAttributes(['oninput' => "this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"])
                             ->placeholder('Operator, Supervisor'),
                         Forms\Components\TextInput::make('location')
                             ->label('Lokasi')
@@ -151,14 +171,15 @@ class EmployeeResource extends Resource
                     ->trueIcon('heroicon-o-pause-circle')
                     ->falseIcon('')
                     ->trueColor('warning')
-                    ->tooltip('Notifikasi ditunda (Sedang diproses)'),
+                    ->tooltip(fn ($record) => $record->reminders_muted ? 'Notifikasi ditunda (Sedang diproses)' : null),
                 Tables\Columns\TextColumn::make('contract_start')
                     ->label('Mulai Kontrak')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('contract_end')
                     ->label('Akhir Kontrak')
-                    ->date()
+                    ->default('-')
+                    ->formatStateUsing(fn ($state, $record) => $record->is_permanent ? '-' : ($state ? \Carbon\Carbon::parse($state)->format('M j, Y') : '-'))
                     ->sortable()
                     ->color(fn ($record) => match(true) {
                         $record && $record->contract_end && $record->contract_end < today() => 'danger',
@@ -194,13 +215,26 @@ class EmployeeResource extends Resource
                 Tables\Filters\SelectFilter::make('dept')
                     ->label('Departemen')
                     ->options(fn () => Employee::distinct()->pluck('dept', 'dept')->toArray()),
-                Tables\Filters\TernaryFilter::make('is_permanent')
+                Tables\Filters\SelectFilter::make('contract_status')
                     ->label('Status Kepegawaian')
-                    ->placeholder('Semua')
-                    ->trueLabel('Tetap')
+                    ->options([
+                        'tetap' => 'Karyawan Tetap',
+                        'aktif' => 'Kontrak Aktif',
+                        'mendekati' => 'Mendekati Kadaluarsa',
+                        'kadaluarsa' => 'Kadaluarsa',
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return match ($data['value'] ?? null) {
+                            'tetap' => $query->where('is_permanent', true),
+                            'aktif' => $query->where('is_permanent', false)->where('contract_end', '>', today()->addDays(30)),
+                            'mendekati' => $query->where('is_permanent', false)->where('contract_end', '<=', today()->addDays(30))->where('contract_end', '>=', today()),
+                            'kadaluarsa' => $query->where('is_permanent', false)->where('contract_end', '<', today()),
+                            default => $query,
+                        };
+                    }),
             ])
             ->actions([
-                Tables\Actions\Action::make('mute')
+                \Filament\Tables\Actions\Action::make('mute')
                     ->label('Tandai Diproses')
                     ->icon('heroicon-o-pause-circle')
                     ->color('warning')
@@ -211,7 +245,7 @@ class EmployeeResource extends Resource
                     ->requiresConfirmation()
                     ->modalHeading('Tunda Notifikasi')
                     ->modalDescription('Tandai data ini sedang diproses perpanjangan? Notifikasi akan dihentikan sementara.'),
-                Tables\Actions\Action::make('unmute')
+                \Filament\Tables\Actions\Action::make('unmute')
                     ->label('Batal Diproses')
                     ->icon('heroicon-o-play-circle')
                     ->color('success')
@@ -220,8 +254,11 @@ class EmployeeResource extends Resource
                     })
                     ->visible(fn (Employee $record) => $record->reminders_muted)
                     ->requiresConfirmation(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ])->icon('heroicon-m-ellipsis-vertical')->tooltip('Aksi'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -249,8 +286,9 @@ class EmployeeResource extends Resource
     {
         return [
             'index' => Pages\ListEmployees::route('/'),
-            'create' => Pages\CreateEmployee::route('/create'),
-            'edit' => Pages\EditEmployee::route('/{record}/edit'),
+            // 'create' => Pages\CreateEmployee::route('/create'),
+            // 'edit' => Pages\EditEmployee::route('/{record}/edit'),
+            'view' => Pages\ViewEmployee::route('/{record}'),
         ];
     }
 }

@@ -44,6 +44,11 @@ class PermitReport extends Page implements HasForms
         $this->searched = true;
     }
 
+    public function updatedData(): void
+    {
+        $this->search();
+    }
+
     public function form(Form $form): Form
     {
         return $form
@@ -60,26 +65,33 @@ class PermitReport extends Page implements HasForms
                                     'expired' => 'Kadaluarsa',
                                 ])
                                 ->placeholder('Semua Status')
-                                ->native(false),
+                                ->native(false)
+                                ->live(debounce: 500),
 
-                            TextInput::make('type')
+                            Select::make('type')
                                 ->label('Jenis Izin')
-                                ->placeholder('Cth: IMB, IPAL, dll...')
-                                ->maxLength(100),
+                                ->options(fn () => Permit::distinct()->pluck('type', 'type')->toArray())
+                                ->placeholder('Semua Jenis')
+                                ->native(false)
+                                ->searchable()
+                                ->live(debounce: 500),
 
-                            TextInput::make('holder')
-                                ->label('Holder')
-                                ->placeholder('Nama pemegang izin...')
-                                ->maxLength(100),
+                            TextInput::make('number')
+                                ->label('Nomor Izin')
+                                ->placeholder('Cari nomor...')
+                                ->maxLength(100)
+                                ->live(debounce: 500),
                         ]),
                         Grid::make(3)->schema([
-                            DatePicker::make('expires_from')
-                                ->label('Tanggal Kadaluarsa (Dari)')
-                                ->native(false),
+                            DatePicker::make('expires_at_from')
+                                ->label('Kadaluarsa (Dari)')
+                                ->native(false)
+                                ->live(debounce: 500),
 
-                            DatePicker::make('expires_until')
-                                ->label('Tanggal Kadaluarsa (Sampai)')
-                                ->native(false),
+                            DatePicker::make('expires_at_until')
+                                ->label('Kadaluarsa (Sampai)')
+                                ->native(false)
+                                ->live(debounce: 500),
                                 
                             Select::make('rule_days')
                                 ->label('Aturan Pengingat (H- Hari)')
@@ -91,7 +103,8 @@ class PermitReport extends Page implements HasForms
                                         ->toArray();
                                 })
                                 ->placeholder('Pilih Aturan')
-                                ->native(false),
+                                ->native(false)
+                                ->live(debounce: 500),
                         ]),
                     ]),
             ])

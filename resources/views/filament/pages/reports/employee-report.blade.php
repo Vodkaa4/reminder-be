@@ -1,13 +1,10 @@
 <x-filament-panels::page>
     {{-- Filter Form --}}
     <x-filament::section>
-        <form wire:submit="search">
+        <div>
             {{ $this->form }}
 
             <div class="mt-4 flex flex-wrap gap-3">
-                <x-filament::button type="submit" icon="heroicon-o-magnifying-glass">
-                    Tampilkan Data
-                </x-filament::button>
 
                 <x-filament::button
                     wire:click="exportExcel"
@@ -27,11 +24,10 @@
                     Export PDF
                 </x-filament::button>
             </div>
-        </form>
+        </div>
     </x-filament::section>
 
     {{-- Results Table --}}
-    @if ($searched)
         {{-- Summary Badges --}}
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
             <x-filament::section>
@@ -120,5 +116,4 @@
                 </p>
             @endif
         </x-filament::section>
-    @endif
 </x-filament-panels::page>

@@ -30,16 +30,4 @@ class ListPermits extends ListRecords
         ];
     }
 
-    public function getTabs(): array
-    {
-        return [
-            'Semua' => \Filament\Resources\Components\Tab::make(),
-            'Aktif' => \Filament\Resources\Components\Tab::make()
-                ->modifyQueryUsing(fn ($query) => $query->where('status', 'active')),
-            'Masa Perpanjangan' => \Filament\Resources\Components\Tab::make()
-                ->modifyQueryUsing(fn ($query) => $query->where('status', 'renewal')),
-            'Kedaluwarsa' => \Filament\Resources\Components\Tab::make()
-                ->modifyQueryUsing(fn ($query) => $query->where('status', 'expired')),
-        ];
-    }
 }

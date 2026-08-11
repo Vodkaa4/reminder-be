@@ -48,9 +48,15 @@ class PermitHistoriesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('expires_at')
                     ->label('Tgl Kadaluarsa')
                     ->date(),
+                Tables\Columns\TextColumn::make('old_number')
+                    ->label('No. Lama')
+                    ->default('-'),
                 Tables\Columns\TextColumn::make('notes')
                     ->label('Catatan')
                     ->limit(30),
+                Tables\Columns\TextColumn::make('updater_name')
+                    ->label('Diperbarui Oleh')
+                    ->default('-'),
             ])
             ->filters([
                 //

@@ -86,6 +86,26 @@ class Permit extends Model
             } else {
                 $permit->status = 'active';
             }
+
+            // Automate reminders_muted based on progress_status
+            if ($permit->progress_status && $permit->progress_status !== 'Selesai') {
+                $permit->reminders_muted = true;
+            } else {
+                $permit->reminders_muted = false;
+            }
+        });
+
+        static::updating(function ($permit) {
+            // Automatically log history if expires_at changes
+            if ($permit->isDirty('expires_at') && $permit->getOriginal('expires_at')) {
+                $permit->permitHistories()->create([
+                    'issued_at' => $permit->getOriginal('issued_at'),
+                    'expires_at' => $permit->getOriginal('expires_at'),
+                    'notes' => 'Tersimpan otomatis saat update masa berlaku.',
+                    'updater_name' => auth()->user()?->name ?? 'System',
+                    'old_number' => $permit->getOriginal('number'),
+                ]);
+            }
         });
     }
 }

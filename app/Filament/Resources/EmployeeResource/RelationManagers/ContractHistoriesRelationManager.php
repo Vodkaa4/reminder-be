@@ -52,6 +52,9 @@ class ContractHistoriesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('notes')
                     ->label('Catatan')
                     ->limit(30),
+                Tables\Columns\TextColumn::make('updater_name')
+                    ->label('Dipebarui Oleh')
+                    ->default('-'),
             ])
             ->filters([
                 //

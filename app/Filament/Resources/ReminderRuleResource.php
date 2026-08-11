@@ -39,6 +39,7 @@ class ReminderRuleResource extends Resource
                     ->label('H- Hari')
                     ->required()
                     ->numeric()
+                    ->extraInputAttributes(['oninput' => "this.value = this.value.replace(/[^0-9]/g, '')"])
                     ->unique(modifyRuleUsing: function (\Illuminate\Validation\Rules\Unique $rule, Forms\Get $get) {
                         return $rule->where('entity', $get('entity'));
                     }, ignoreRecord: true),
@@ -59,6 +60,7 @@ class ReminderRuleResource extends Resource
                 Forms\Components\TextInput::make('recurring_interval_days')
                     ->label('Ulangi setiap X hari')
                     ->numeric()
+                    ->extraInputAttributes(['oninput' => "this.value = this.value.replace(/[^0-9]/g, '')"])
                     ->required(fn (Forms\Get $get) => $get('is_recurring'))
                     ->visible(fn (Forms\Get $get) => $get('is_recurring')),
             ]);

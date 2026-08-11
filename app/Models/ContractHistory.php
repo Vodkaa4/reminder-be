@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContractHistory extends Model
 {
-    protected $fillable = ['employee_id', 'start_date', 'end_date', 'document_path', 'notes'];
+    protected $fillable = ['employee_id', 'start_date', 'end_date', 'document_path', 'notes', 'updater_name'];
 
     protected $casts = [
         'start_date' => 'date',

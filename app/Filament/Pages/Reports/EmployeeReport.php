@@ -44,6 +44,11 @@ class EmployeeReport extends Page implements HasForms
         $this->searched = true;
     }
 
+    public function updatedData(): void
+    {
+        $this->search();
+    }
+
     public function form(Form $form): Form
     {
         return $form
@@ -59,26 +64,31 @@ class EmployeeReport extends Page implements HasForms
                                     '0' => 'Kontrak',
                                 ])
                                 ->placeholder('Semua Status')
-                                ->native(false),
+                                ->native(false)
+                                ->live(debounce: 500),
 
                             TextInput::make('name')
                                 ->label('Nama')
                                 ->placeholder('Nama Karyawan...')
-                                ->maxLength(100),
+                                ->maxLength(100)
+                                ->live(debounce: 500),
 
                             TextInput::make('nip')
                                 ->label('NIP')
                                 ->placeholder('NIP Karyawan...')
-                                ->maxLength(50),
+                                ->maxLength(50)
+                                ->live(debounce: 500),
                         ]),
                         Grid::make(3)->schema([
                             DatePicker::make('contract_end_from')
                                 ->label('Kontrak Habis (Dari)')
-                                ->native(false),
+                                ->native(false)
+                                ->live(debounce: 500),
 
                             DatePicker::make('contract_end_until')
                                 ->label('Kontrak Habis (Sampai)')
-                                ->native(false),
+                                ->native(false)
+                                ->live(debounce: 500),
                                 
                             Select::make('rule_days')
                                 ->label('Aturan Pengingat (H- Hari)')
@@ -90,7 +100,8 @@ class EmployeeReport extends Page implements HasForms
                                         ->toArray();
                                 })
                                 ->placeholder('Pilih Aturan')
-                                ->native(false),
+                                ->native(false)
+                                ->live(debounce: 500),
                         ]),
                     ]),
             ])

@@ -23,4 +23,21 @@ class Employee extends Model
     {
         return $this->hasMany(ContractHistory::class);
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::updating(function ($employee) {
+            // Automatically log history if contract_end changes
+            if ($employee->isDirty('contract_end') && $employee->getOriginal('contract_end')) {
+                $employee->contractHistories()->create([
+                    'start_date' => $employee->getOriginal('contract_start'),
+                    'end_date' => $employee->getOriginal('contract_end'),
+                    'notes' => 'Tersimpan otomatis saat update masa berlaku.',
+                    'updater_name' => auth()->user()?->name ?? 'System',
+                ]);
+            }
+        });
+    }
 }

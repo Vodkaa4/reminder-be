@@ -37,6 +37,11 @@ class UserResource extends Resource
                             ->label('Nama')
                             ->required()
                             ->maxLength(255)
+                            ->regex('/^[\pL\s]+$/u')
+                            ->validationMessages([
+                                'regex' => 'Nama hanya boleh berisi huruf dan spasi.',
+                            ])
+                            ->extraInputAttributes(['oninput' => "this.value = this.value.replace(/[^a-zA-Z\s]/g, '')"])
                             ->placeholder('Masukkan nama lengkap'),
                         Forms\Components\TextInput::make('email')
                             ->email()
