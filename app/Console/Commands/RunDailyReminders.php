@@ -52,12 +52,6 @@ class RunDailyReminders extends Command
                 $this->info("Found {$employees->count()} contracts matching rule H-{$rule->days_before}");
 
                 foreach ($employees as $e) {
-                    $daysLeft = (int) $today->diffInDays(Carbon::parse($e->contract_end), false);
-                    // Jika sudah lewat masa toleransi 5 hari dari hari-H aturan, skip (sudah basi)
-                    if ($rule->days_before - $daysLeft > 5) {
-                        continue;
-                    }
-
                     $result = $this->processReminder($e, 'contract', $hrdEmail, $e->name, Carbon::parse($e->contract_end)->format('Y-m-d'), $rule);
                     if ($result === 'sent') $totalSent++;
                     if ($result === 'skipped') $totalSkipped++;
@@ -78,12 +72,6 @@ class RunDailyReminders extends Command
                 $this->info("Found {$permits->count()} permits matching rule H-{$rule->days_before}");
 
                 foreach ($permits as $permit) {
-                    $daysLeft = (int) $today->diffInDays(Carbon::parse($permit->expires_at), false);
-                    // Jika sudah lewat masa toleransi 5 hari dari hari-H aturan, skip (sudah basi)
-                    if ($rule->days_before - $daysLeft > 5) {
-                        continue;
-                    }
-
                     $result = $this->processReminder($permit, 'permit', $permit->pic, $permit->type . ' - ' . $permit->holder, Carbon::parse($permit->expires_at)->format('Y-m-d'), $rule, $legalEmail);
                     if ($result === 'sent') $totalSent++;
                     if ($result === 'skipped') $totalSkipped++;
